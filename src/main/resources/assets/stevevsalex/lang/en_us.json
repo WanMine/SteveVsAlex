@@ -1,0 +1,9 @@
+{
+  "key.move_heli_up.desc": "Helicopter Up",
+  "key.plane_inventory_open.desc": "Open Plane Inventory",
+  "key.plane_throttle_up.desc": "Increase Throttle",
+  "key.plane_throttle_down.desc": "Decrease Throttle",
+  "key.plane_pitch_up.desc": "Plane Pitch Up",
+  "key.plane_pitch_down.desc": "Plane Pitch Down",
+  "key.stevevsalex.category": "Steve Vs Alex"
+}

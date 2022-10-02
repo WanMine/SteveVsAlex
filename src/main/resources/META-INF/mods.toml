@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+license = "All Rights Reserved"
+#issueTrackerURL="http://my.issue.tracker/" #optional
+
+[[mods]]
+modId = "stevevsalex"
+version = "${file.jarVersion}"
+displayName = "SteveVsAlex"
+#updateJSONURL="http://myurl.me/" #optional
+#displayURL="http://example.com/" #optional
+logoFile="logo.png"
+credits="Some models by MaRK" #optional
+authors = "Diamantino"
+description = '''
+
+'''
+
+[[dependencies.stevevsalex]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.stevevsalex]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,1.20)"
+ordering = "NONE"
+side = "BOTH"
