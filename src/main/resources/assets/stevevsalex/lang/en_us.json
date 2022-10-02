@@ -11,8 +11,8 @@
   "entity.stevevsalex.steve_copter": "SteveCopter",
   "item.stevevsalex.steve_ane": "StevAne",
   "entity.stevevsalex.steve_ane": "StevAne",
-  "item.stevevsalex.steve_omb": "SteveOmb",
-  "entity.stevevsalex.steve_omb": "SteveOmb",
-  "item.stevevsalex.steve_arrow": "SteveArrow",
-  "entity.stevevsalex.steve_arrow": "SteveArrow"
+  "item.stevevsalex.steve_omb": "StevOmb",
+  "entity.stevevsalex.steve_omb": "StevOmb",
+  "item.stevevsalex.steve_arrow": "StevArrow",
+  "entity.stevevsalex.steve_arrow": "StevArrow"
 }
