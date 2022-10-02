@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.entities.base;
 
 import com.diamantino.stevevsalex.client.sounds.PlaneSound;
+import com.diamantino.stevevsalex.entities.SteveArrowEntity;
 import com.diamantino.stevevsalex.entities.SteveOmbEntity;
 import com.diamantino.stevevsalex.registries.*;
 import com.diamantino.stevevsalex.network.SVANetworking;
@@ -30,7 +31,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
@@ -63,6 +63,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public static final EntityDataAccessor<Quaternion> Q = SynchedEntityData.defineId(PlaneEntity.class, SVADataSerializers.QUATERNION_SERIALIZER_ENTRY.get());
     public static final EntityDataAccessor<Integer> THROTTLE = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Byte> PITCH_UP = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.BYTE);
+    public static final EntityDataAccessor<Boolean> IS_SHOOTING = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.BOOLEAN);
     public static final int MAX_THROTTLE = 6;
     public final String vehichleName;
     public Quaternion Q_Client = new Quaternion(Quaternion.ONE);
@@ -80,10 +81,14 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
     private int damageTimeout;
     public int notMovingTime;
+    public int projectilesToShoot;
     public int goldenHeartsTimeout = 0;
 
     public float propellerRotationOld;
     public float propellerRotationNew;
+
+    public float minigunRotationOld;
+    public float minigunRotationNew;
 
     public PlaneEntity(EntityType<? extends PlaneEntity> entityTypeIn, Level worldIn, String name, WeaponType weaponType) {
         super(entityTypeIn, worldIn);
@@ -104,6 +109,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         entityData.define(DAMAGE_TAKEN, 0f);
         entityData.define(THROTTLE, 0);
         entityData.define(PITCH_UP, (byte) 0);
+        entityData.define(IS_SHOOTING, false);
     }
 
     public float getMaxSpeed() {
@@ -112,6 +118,14 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
     public void setMaxSpeed(float maxSpeed) {
         entityData.set(MAX_SPEED, maxSpeed);
+    }
+
+    public boolean getIsShooting() {
+        return entityData.get(IS_SHOOTING);
+    }
+
+    public void setIsShooting(boolean isShooting) {
+        entityData.set(IS_SHOOTING, isShooting);
     }
 
     public Quaternion getQ() {
@@ -195,18 +209,24 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     @Override
     public boolean hurt(DamageSource source, float amount) {
         Entity entity = source.getDirectEntity();
-        if (entity == getControllingPassenger() && entity instanceof Player player) {
+        if (entity == getControllingPassenger() && entity instanceof Player && !getIsShooting()) {
             switch (weaponType) {
                 case GUN -> {}
                 case MINIGUN -> {
-                    shoot(player);
+                    projectilesToShoot = 16;
+
+                    setIsShooting(true);
                 }
                 case BOMB -> {
+                    setIsShooting(true);
+
                     SteveOmbEntity bombEntity = new SteveOmbEntity(SVAEntityTypes.STEVE_OMB.get(), level, 100);
 
                     bombEntity.setPos(this.position());
 
                     level.addFreshEntity(bombEntity);
+
+                    setIsShooting(false);
                 }
             }
 
@@ -256,20 +276,36 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         Vector3f motion1 = transformPos(new Vector3f(0, 0, (float) (1 + getDeltaMovement().length())));
         Vec3 motion = new Vec3(motion1);
 
-        Vector3f pos = transformPos(new Vector3f(5.0f, 0.8f, 0.8f));
+        Vector3f pos1 = transformPos(new Vector3f(1.45f, 1.1f, 0f));
+        Vector3f pos2 = transformPos(new Vector3f(-1.45f, 1.1f, 0f));
 
-        double x = pos.x() + getX();
-        double y = pos.y() + getY();
-        double z = pos.z() + getZ();
+        double x1 = pos1.x() + getX();
+        double y1 = pos1.y() + getY();
+        double z1 = pos1.z() + getZ();
 
-        Arrow arrowEntity = new Arrow(level, x, y, z);
-        arrowEntity.setOwner(player);
-        arrowEntity.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
+        double x2 = pos2.x() + getX();
+        double y2 = pos2.y() + getY();
+        double z2 = pos2.z() + getZ();
+
+        SteveArrowEntity steveArrowEntity1 = new SteveArrowEntity(level, x1, y1, z1);
+        steveArrowEntity1.setOwner(player);
+        steveArrowEntity1.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
+        steveArrowEntity1.setXRot(getXRot());
+        steveArrowEntity1.setYRot(getYRot());
+
+        SteveArrowEntity steveArrowEntity2 = new SteveArrowEntity(level, x2, y2, z2);
+        steveArrowEntity2.setOwner(player);
+        steveArrowEntity2.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
+        steveArrowEntity2.setXRot(getXRot());
+        steveArrowEntity2.setYRot(getYRot());
+
         /*if (!player.isCreative()) {
             itemStackHandler.extractItem(0, 1, false);
-            arrowEntity.pickup = AbstractArrow.Pickup.ALLOWED;
+            steevArrowEntity.pickup = AbstractArrow.Pickup.ALLOWED;
         }*/
-        level.addFreshEntity(arrowEntity);
+
+        level.addFreshEntity(steveArrowEntity1);
+        level.addFreshEntity(steveArrowEntity2);
     }
 
     private void explode() {
@@ -311,6 +347,20 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
                 int throttle = getThrottle();
                 propellerRotationNew += throttle * 0.1;
             //}
+        }
+
+        if (getIsShooting()) {
+            minigunRotationOld = minigunRotationNew;
+
+            minigunRotationNew += 1;
+
+            if (projectilesToShoot >= 1) {
+                shoot((Player) getControllingPassenger());
+
+                projectilesToShoot--;
+            } else {
+                setIsShooting(false);
+            }
         }
 
         if (level.isClientSide && getHealth() <= 0) {
@@ -828,7 +878,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
         int index = getPassengers().indexOf(passenger);
         if (index == 0) {
-            Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), 0));
+            Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()) - 0.2f, 5.8f));
             passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
         } else if (index == 1) {
             Vector3f pos = transformPos(new Vector3f(-1, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), -1.3f));

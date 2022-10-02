@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.client.renderers;
 
 import com.diamantino.stevevsalex.client.models.SteveAneModel;
+import com.diamantino.stevevsalex.client.models.SteveArrowModel;
 import com.diamantino.stevevsalex.client.models.SteveCopterModel;
 import com.diamantino.stevevsalex.client.models.SteveOmbModel;
 import com.diamantino.stevevsalex.registries.SVAEntityTypes;
@@ -16,17 +17,23 @@ import net.minecraftforge.fml.common.Mod;
 import static com.diamantino.stevevsalex.SteveVsAlex.MODID;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class VehicleLayers {
+public class EntityLayers {
+    //Vehicles
     public static final ModelLayerLocation STEVE_COPTER_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "steve_copter"), "main");
     public static final ModelLayerLocation STEVE_ANE_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "steve_ane"), "main");
 
+    //Bombs
     public static final ModelLayerLocation STEVE_OMB_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "steve_omb"), "main");
+
+    //Projectiles
+    public static final ModelLayerLocation STEVE_ARROW_LAYER = new ModelLayerLocation(new ResourceLocation(MODID, "steve_arrow"), "main");
 
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(STEVE_COPTER_LAYER, SteveCopterModel::createBodyLayer);
         event.registerLayerDefinition(STEVE_ANE_LAYER, SteveAneModel::createBodyLayer);
         event.registerLayerDefinition(STEVE_OMB_LAYER, SteveOmbModel::createBodyLayer);
+        event.registerLayerDefinition(STEVE_ARROW_LAYER, SteveArrowModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -35,6 +42,7 @@ public class VehicleLayers {
         event.registerEntityRenderer(SVAEntityTypes.STEVE_COPTER.get(), context -> new VehichleRenderer<>(context, new SteveCopterModel<>(entityModelSet.bakeLayer(STEVE_COPTER_LAYER)), 0.6f));
         event.registerEntityRenderer(SVAEntityTypes.STEVE_ANE.get(), context -> new VehichleRenderer<>(context, new SteveAneModel<>(entityModelSet.bakeLayer(STEVE_ANE_LAYER)), 0.6f));
         event.registerEntityRenderer(SVAEntityTypes.STEVE_OMB.get(), context -> new BombRenderer<>(context, new SteveOmbModel<>(entityModelSet.bakeLayer(STEVE_OMB_LAYER)), 0.6f));
+        event.registerEntityRenderer(SVAEntityTypes.STEVE_ARROW.get(), context -> new ProjectileRenderer<>(context, new SteveArrowModel<>(entityModelSet.bakeLayer(STEVE_ARROW_LAYER)), 0f));
     }
 
     @SubscribeEvent

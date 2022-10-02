@@ -36,6 +36,10 @@ public class VehichleRenderer<T extends PlaneEntity> extends EntityRenderer<T> {
         return Mth.lerp(partialTicks, entity.propellerRotationOld, entity.propellerRotationNew);
     }
 
+    public static float getMinigunRotation(PlaneEntity entity, float partialTicks) {
+        return Mth.lerp(partialTicks, entity.minigunRotationOld, entity.minigunRotationNew);
+    }
+
     @Override
     public void render(T planeEntity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();

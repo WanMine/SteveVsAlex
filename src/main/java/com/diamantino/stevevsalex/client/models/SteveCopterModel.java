@@ -8,6 +8,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
+import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getMinigunRotation;
 import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getPropellerRotation;
 
 public class SteveCopterModel<T extends SteveCopterEntity> extends EntityModel<SteveCopterEntity> {
@@ -15,11 +16,15 @@ public class SteveCopterModel<T extends SteveCopterEntity> extends EntityModel<S
 	private final ModelPart Full;
 	private final ModelPart Propeller;
 	private final ModelPart BackPropeller;
+	private final ModelPart Minigun1;
+	private final ModelPart Minigun2;
 
 	public SteveCopterModel(ModelPart root) {
 		this.Full = root.getChild("Full");
 		this.Propeller = this.Full.getChild("Propeller");
 		this.BackPropeller = this.Full.getChild("BackPropeller");
+		this.Minigun1 = this.Full.getChild("Minigun1").getChild("ShootingPart");
+		this.Minigun2 = this.Full.getChild("Minigun2").getChild("ShootingPart");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -244,6 +249,48 @@ public class SteveCopterModel<T extends SteveCopterEntity> extends EntityModel<S
 
 		PartDefinition head_r4 = head10.addOrReplaceChild("head_r4", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-8.0F, 24.0F, 32.0F, 0.0F, 1.5708F, 0.0F));
 
+		PartDefinition Minigun2 = Full.addOrReplaceChild("Minigun2", CubeListBuilder.create().texOffs(0, 36).mirror().addBox(-26.5F, -22.5F, -3.0F, 8.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(1.0F, -3.0F, 0.0F));
+
+		PartDefinition ShootingPart2 = Minigun2.addOrReplaceChild("ShootingPart", CubeListBuilder.create(), PartPose.offset(-23.5F, -19.5F, 0.0F));
+
+		PartDefinition Barrels2 = ShootingPart2.addOrReplaceChild("Barrels2", CubeListBuilder.create().texOffs(18, 34).mirror().addBox(-22.5F, -21.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(18, 34).mirror().addBox(-25.5F, -21.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(18, 34).mirror().addBox(-25.5F, -18.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(18, 34).mirror().addBox(-22.5F, -18.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(18, 34).mirror().addBox(-21.5F, -20.0F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(18, 34).mirror().addBox(-26.5F, -20.0F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(18, 34).mirror().addBox(-24.0F, -22.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(18, 34).mirror().addBox(-24.0F, -17.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(23.5F, 19.5F, 0.0F));
+
+		PartDefinition Disk3 = ShootingPart2.addOrReplaceChild("Disk3", CubeListBuilder.create().texOffs(20, 37).mirror().addBox(-25.5F, -20.5F, -4.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(22, 35).mirror().addBox(-24.5F, -21.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(22, 35).mirror().addBox(-24.5F, -18.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(23.5F, 19.5F, 0.0F));
+
+		PartDefinition Disk4 = ShootingPart2.addOrReplaceChild("Disk4", CubeListBuilder.create().texOffs(20, 37).mirror().addBox(-25.5F, -20.5F, -4.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(22, 35).mirror().addBox(-24.5F, -21.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(22, 35).mirror().addBox(-24.5F, -18.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(23.5F, 19.5F, -8.0F));
+
+		PartDefinition Minigun1 = Full.addOrReplaceChild("Minigun1", CubeListBuilder.create().texOffs(0, 36).addBox(17.5F, -22.5F, -3.0F, 8.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(1.0F, -3.0F, 0.0F));
+
+		PartDefinition ShootingPart = Minigun1.addOrReplaceChild("ShootingPart", CubeListBuilder.create(), PartPose.offset(22.5F, -19.5F, 0.0F));
+
+		PartDefinition Barrels = ShootingPart.addOrReplaceChild("Barrels", CubeListBuilder.create().texOffs(18, 34).addBox(20.5F, -21.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 34).addBox(23.5F, -21.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 34).addBox(23.5F, -18.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 34).addBox(20.5F, -18.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 34).addBox(19.5F, -20.0F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 34).addBox(24.5F, -20.0F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 34).addBox(22.0F, -22.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F))
+				.texOffs(18, 34).addBox(22.0F, -17.5F, -16.0F, 1.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)), PartPose.offset(-22.5F, 19.5F, 0.0F));
+
+		PartDefinition Disk1 = ShootingPart.addOrReplaceChild("Disk1", CubeListBuilder.create().texOffs(20, 37).addBox(20.5F, -20.5F, -4.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(22, 35).addBox(21.5F, -21.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(22, 35).addBox(21.5F, -18.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-22.5F, 19.5F, 0.0F));
+
+		PartDefinition Disk2 = ShootingPart.addOrReplaceChild("Disk2", CubeListBuilder.create().texOffs(20, 37).addBox(20.5F, -20.5F, -4.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(22, 35).addBox(21.5F, -21.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(22, 35).addBox(21.5F, -18.5F, -4.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-22.5F, 19.5F, -8.0F));
+
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
@@ -256,5 +303,9 @@ public class SteveCopterModel<T extends SteveCopterEntity> extends EntityModel<S
 	public void setupAnim(SteveCopterEntity p_102618_, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
 		Propeller.yRot = getPropellerRotation(p_102618_, p_102619_);
 		BackPropeller.xRot = getPropellerRotation(p_102618_, p_102619_);
+		if (p_102618_.getIsShooting()) {
+			Minigun1.zRot = getMinigunRotation(p_102618_, p_102619_);
+			Minigun2.zRot = getMinigunRotation(p_102618_, p_102619_);
+		}
 	}
 }

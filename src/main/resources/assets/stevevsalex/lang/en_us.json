@@ -1,9 +1,18 @@
 {
   "key.move_heli_up.desc": "Helicopter Up",
-  "key.plane_inventory_open.desc": "Open Plane Inventory",
+  "key.plane_inventory_open.desc": "Open Plane Inventory (WIP)",
   "key.plane_throttle_up.desc": "Increase Throttle",
   "key.plane_throttle_down.desc": "Decrease Throttle",
   "key.plane_pitch_up.desc": "Plane Pitch Up",
   "key.plane_pitch_down.desc": "Plane Pitch Down",
-  "key.stevevsalex.category": "Steve Vs Alex"
+  "key.stevevsalex.category": "Steve Vs Alex",
+
+  "item.stevevsalex.steve_copter": "SteveCopter",
+  "entity.stevevsalex.steve_copter": "SteveCopter",
+  "item.stevevsalex.steve_ane": "StevAne",
+  "entity.stevevsalex.steve_ane": "StevAne",
+  "item.stevevsalex.steve_omb": "SteveOmb",
+  "entity.stevevsalex.steve_omb": "SteveOmb",
+  "item.stevevsalex.steve_arrow": "SteveArrow",
+  "entity.stevevsalex.steve_arrow": "SteveArrow"
 }

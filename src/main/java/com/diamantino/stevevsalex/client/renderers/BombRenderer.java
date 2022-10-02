@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.client.renderers;
 
 import com.diamantino.stevevsalex.entities.SteveOmbEntity;
+import com.diamantino.stevevsalex.entities.base.BombEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 import static com.diamantino.stevevsalex.SteveVsAlex.MODID;
 
-public class BombRenderer<T extends SteveOmbEntity> extends EntityRenderer<T> {
+public class BombRenderer<T extends BombEntity> extends EntityRenderer<T> {
 
     protected final EntityModel<T> bombEntityModel;
 
@@ -28,7 +29,7 @@ public class BombRenderer<T extends SteveOmbEntity> extends EntityRenderer<T> {
         this.shadowRadius = shadowSize;
     }
 
-    public static float getBombRotation(SteveOmbEntity entity, float partialTicks) {
+    public static float getBombRotation(BombEntity entity, float partialTicks) {
         return Mth.lerp(partialTicks, entity.bombRotationOld, entity.bombRotationNew);
     }
 
@@ -56,11 +57,11 @@ public class BombRenderer<T extends SteveOmbEntity> extends EntityRenderer<T> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(SteveOmbEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(BombEntity entity) {
         return getTexture(entity);
     }
 
-    public static ResourceLocation getTexture(SteveOmbEntity entity) {
+    public static ResourceLocation getTexture(BombEntity entity) {
         if (cachedTextures.containsKey(entity.bombName)) {
             return cachedTextures.get(entity.bombName);
         }

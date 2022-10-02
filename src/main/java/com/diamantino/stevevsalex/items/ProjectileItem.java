@@ -1,7 +1,7 @@
 package com.diamantino.stevevsalex.items;
 
 import com.diamantino.stevevsalex.entities.SteveOmbEntity;
-import com.diamantino.stevevsalex.entities.base.BombEntity;
+import com.diamantino.stevevsalex.entities.base.ProjectileEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class BombItem extends Item {
+public class ProjectileItem extends Item {
 
     private static final Predicate<Entity> ENTITY_PREDICATE = EntitySelector.NO_SPECTATORS.and(Entity::isPickable);
-    private final Supplier<? extends EntityType<? extends BombEntity>> bombEntityType;
+    private final Supplier<? extends EntityType<? extends ProjectileEntity>> bombEntityType;
 
-    public BombItem(Properties properties, Supplier<? extends EntityType<? extends BombEntity>> bombEntityType) {
+    public ProjectileItem(Properties properties, Supplier<? extends EntityType<? extends ProjectileEntity>> bombEntityType) {
         super(properties.stacksTo(1));
         this.bombEntityType = bombEntityType;
     }
@@ -53,21 +53,21 @@ public class BombItem extends Item {
             }
 
             if (hitResult.getType() == HitResult.Type.BLOCK) {
-                BombEntity bombEntity = bombEntityType.get().create(worldIn);
+                ProjectileEntity projectileEntity = bombEntityType.get().create(worldIn);
 
-                bombEntity.setPos(hitResult.getLocation().x(), hitResult.getLocation().y(), hitResult.getLocation().z());
-                bombEntity.setYRot(playerIn.getYRot());
-                bombEntity.yRotO = playerIn.yRotO;
-                bombEntity.setCustomName(itemstack.getHoverName());
+                projectileEntity.setPos(hitResult.getLocation().x(), hitResult.getLocation().y(), hitResult.getLocation().z());
+                projectileEntity.setYRot(playerIn.getYRot());
+                projectileEntity.yRotO = playerIn.yRotO;
+                projectileEntity.setCustomName(itemstack.getHoverName());
                 CompoundTag entityTag = itemstack.getTagElement("EntityTag");
                 if (entityTag != null) {
-                    bombEntity.readAdditionalSaveData(entityTag);
+                    projectileEntity.readAdditionalSaveData(entityTag);
                 }
-                if (!worldIn.noCollision(bombEntity, bombEntity.getBoundingBox().inflate(-0.1D))) {
+                if (!worldIn.noCollision(projectileEntity, projectileEntity.getBoundingBox().inflate(-0.1D))) {
                     return InteractionResultHolder.fail(itemstack);
                 } else {
                     if (!worldIn.isClientSide) {
-                        worldIn.addFreshEntity(bombEntity);
+                        worldIn.addFreshEntity(projectileEntity);
                         if (!playerIn.getAbilities().instabuild) {
                             itemstack.shrink(1);
                         }
