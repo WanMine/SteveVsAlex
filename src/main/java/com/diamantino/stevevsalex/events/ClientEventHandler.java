@@ -1,14 +1,14 @@
 package com.diamantino.stevevsalex.events;
 
+import com.diamantino.stevevsalex.SteveVsAlex;
 import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
-import com.diamantino.stevevsalex.entities.base.LargePlaneEntity;
+import com.diamantino.stevevsalex.client.gui.RemoveUpgradesScreen;
+import com.diamantino.stevevsalex.client.gui.StorageScreen;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.network.SVANetworking;
-import com.diamantino.stevevsalex.network.packets.ChangeThrottlePacket;
-import com.diamantino.stevevsalex.network.packets.MoveHeliUpPacket;
-import com.diamantino.stevevsalex.network.packets.OpenPlaneInventoryPacket;
-import com.diamantino.stevevsalex.network.packets.PitchPacket;
+import com.diamantino.stevevsalex.network.packets.*;
 import com.diamantino.stevevsalex.registries.SVAContainers;
+import com.diamantino.stevevsalex.upgrades.BoosterUpgrade;
 import com.diamantino.stevevsalex.utils.ClientUtils;
 import com.diamantino.stevevsalex.utils.MathUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -20,6 +20,7 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -63,6 +64,8 @@ public class ClientEventHandler {
 
     public static void clientSetup() {
         MenuScreens.register(SVAContainers.PLANE_INVENTORY.get(), PlaneInventoryScreen::new);
+        MenuScreens.register(SVAContainers.UPGRADES_REMOVAL.get(), RemoveUpgradesScreen::new);
+        MenuScreens.register(SVAContainers.STORAGE.get(), StorageScreen::new);
     }
 
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
@@ -128,13 +131,15 @@ public class ClientEventHandler {
                     ClientUtils.blit(matrixStack, -90, scaledWidth - 24, scaledHeight - 42, 0, 84, 22, 40);
                     int throttle = planeEntity.getThrottle();
                     if (throttle > 0) {
-                        int throttleScaled = throttle * 28 / 12;
-                        ClientUtils.blit(matrixStack, -90, scaledWidth - 24 + 10, scaledHeight - 42 + 6 + 28 - throttleScaled, 22, 90 + 28 - throttleScaled, 2, throttleScaled);
+                        int throttleScaled = throttle * 28 / BoosterUpgrade.MAX_THROTTLE;
+                        ClientUtils.blit(matrixStack, -90, scaledWidth - 28 + 10, scaledHeight - 42 + 6 + 28 - throttleScaled, 22, 90 + 28 - throttleScaled, 10, throttleScaled);
                     }
 
-                    ItemStack offhandStack = mc.player.getOffhandItem();
-                    HumanoidArm primaryHand = mc.player.getMainArm();
-                    //planeEntity.engineUpgrade.renderPowerHUD(matrixStack, (primaryHand == HumanoidArm.LEFT || offhandStack.isEmpty()) ? HumanoidArm.LEFT : HumanoidArm.RIGHT, scaledWidth, scaledHeight, partialTicks);
+                    if (planeEntity.engineUpgrade != null) {
+                        ItemStack offhandStack = mc.player.getOffhandItem();
+                        HumanoidArm primaryHand = mc.player.getMainArm();
+                        planeEntity.engineUpgrade.renderPowerHUD(matrixStack, (primaryHand == HumanoidArm.LEFT || offhandStack.isEmpty()) ? HumanoidArm.LEFT : HumanoidArm.RIGHT, scaledWidth, scaledHeight, partialTicks);
+                    }
                 }
             }
         });
@@ -232,7 +237,6 @@ public class ClientEventHandler {
         }
     }
 
-    //TODO: make it so player rotation variables correspond to what he is actually looking at, so that guns etc. shoot in the right direction
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
         Camera camera = event.getCamera();
@@ -242,9 +246,6 @@ public class ClientEventHandler {
                 camera.move(-camera.getMaxZoom(4.0D * (planeEntity.getCameraDistanceMultiplayer() - 1.0)), 0.0D, 0.0D);
             } else {
                 float heightDiff = 0;
-                if (planeEntity instanceof LargePlaneEntity) {
-                    heightDiff = -0.1f;
-                }
 
                 double partialTicks = event.getPartialTick();
 
@@ -270,6 +271,17 @@ public class ClientEventHandler {
                 event.setPitch(-(float) MathUtils.lerpAngle(partialTicks, eulerAnglesPrev.pitch, eulerAnglesNow.pitch));
                 event.setYaw((float) MathUtils.lerpAngle(partialTicks, eulerAnglesPrev.yaw, eulerAnglesNow.yaw));
                 event.setRoll(-(float) MathUtils.lerpAngle(partialTicks, eulerAnglesPrev.roll, eulerAnglesNow.roll));
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void planeInventory(ScreenEvent.Opening event) {
+        final LocalPlayer player = Minecraft.getInstance().player;
+        if (event.getScreen() instanceof InventoryScreen && player.getVehicle() instanceof PlaneEntity planeEntity) {
+            if (planeEntity.hasStorageUpgrade()) {
+                event.setCanceled(true);
+                SVANetworking.INSTANCE.sendToServer(new OpenInventoryPacket());
             }
         }
     }

@@ -2,6 +2,7 @@ package com.diamantino.stevevsalex.container;
 
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAContainers;
+import com.diamantino.stevevsalex.upgrades.base.Upgrade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,6 +30,12 @@ public class PlaneInventoryContainer extends AbstractContainerMenu {
     }
 
     private void initSlotsUpgrades(Inventory playerInventory) {
+        if (planeEntity != null) {
+            for (Upgrade upgrade : planeEntity.upgrades.values()) {
+                upgrade.addContainerData(this::addSlot, this::addDataSlot);
+            }
+        }
+
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
                 addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));

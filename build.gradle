@@ -1,7 +1,5 @@
 plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
-    id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 group = 'com.diamantino'
@@ -92,8 +90,6 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.1.32'
-
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 jar {
@@ -108,13 +104,6 @@ jar {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "17"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "17"
 }
 
 jar.finalizedBy('reobfJar')

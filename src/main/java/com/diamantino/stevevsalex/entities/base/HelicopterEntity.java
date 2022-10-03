@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class HelicopterEntity extends LargePlaneEntity {
+public abstract class HelicopterEntity extends PlaneEntity {
 
     public static final EntityDataAccessor<Boolean> MOVE_UP = SynchedEntityData.defineId(HelicopterEntity.class, EntityDataSerializers.BOOLEAN);
 
@@ -51,7 +51,7 @@ public abstract class HelicopterEntity extends LargePlaneEntity {
             tempMotionVars.push *= 1.5;
         }
 
-        if (/*isPowered() && */entityData.get(MOVE_UP) && tempMotionVars.moveForward >= 0) {
+        if (isPowered() && entityData.get(MOVE_UP) && tempMotionVars.moveForward >= 0) {
             tempMotionVars.push += 0.01 * getThrottle();
         }
         return transformPos(new Vector3f(0, tempMotionVars.push, 0));
@@ -134,38 +134,9 @@ public abstract class HelicopterEntity extends LargePlaneEntity {
     @Override
     public void positionRider(@NotNull Entity passenger) {
         positionRiderGeneric(passenger);
-        int index = getPassengers().indexOf(passenger);
 
-        if (index == 0) {
-            Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), 0.5f));
-            passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
-        } else {
-            if (hasLargeUpgrade) {
-                index++;
-            }
-            switch (index) {
-                case 1 -> {
-                    Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + getEntityYOffset(passenger)), -0.5f));
-                    passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
-                }
-                case 2 -> {
-                    Vector3f pos = transformPos(new Vector3f(-1, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset() - 0.4f), 0));
-                    passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
-                }
-                case 3 -> {
-                    Vector3f pos = transformPos(new Vector3f(1, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()) - 0.4f, 0));
-                    passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
-                }
-            }
-        }
-    }
-
-    @Override
-    public double getEntityYOffset(Entity passenger) {
-        if (passenger instanceof Villager) {
-            return ((Villager) passenger).isBaby() ? -0.1 : -0.35D;
-        }
-        return passenger.getMyRidingOffset();
+        Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), 0.5f));
+        passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
     }
 
     @Override

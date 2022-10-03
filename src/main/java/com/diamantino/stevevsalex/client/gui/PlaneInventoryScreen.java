@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.client.gui;
 
 import com.diamantino.stevevsalex.container.PlaneInventoryContainer;
+import com.diamantino.stevevsalex.upgrades.base.Upgrade;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -23,7 +24,11 @@ public class PlaneInventoryScreen extends AbstractContainerScreen<PlaneInventory
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTicks);
-
+        if (menu.planeEntity != null) {
+            for (Upgrade upgrade : menu.planeEntity.upgrades.values()) {
+                upgrade.renderScreen(poseStack, mouseX, mouseY, partialTicks, this);
+            }
+        }
         renderTooltip(poseStack, mouseX, mouseY);
     }
 
@@ -33,6 +38,12 @@ public class PlaneInventoryScreen extends AbstractContainerScreen<PlaneInventory
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, GUI);
         blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+
+        if (menu.planeEntity != null) {
+            for (Upgrade upgrade : menu.planeEntity.upgrades.values()) {
+                upgrade.renderScreenBg(poseStack, x, y, partialTicks, this);
+            }
+        }
     }
 
     @Override

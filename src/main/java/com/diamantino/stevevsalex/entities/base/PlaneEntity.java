@@ -1,20 +1,30 @@
 package com.diamantino.stevevsalex.entities.base;
 
+import com.diamantino.stevevsalex.SteveVsAlex;
 import com.diamantino.stevevsalex.client.sounds.PlaneSound;
+import com.diamantino.stevevsalex.container.RemoveUpgradesContainer;
 import com.diamantino.stevevsalex.entities.SteveArrowEntity;
 import com.diamantino.stevevsalex.entities.SteveOmbEntity;
+import com.diamantino.stevevsalex.network.packets.UpdateUpgradePacket;
+import com.diamantino.stevevsalex.network.packets.UpgradeRemovedPacket;
 import com.diamantino.stevevsalex.registries.*;
 import com.diamantino.stevevsalex.network.SVANetworking;
 import com.diamantino.stevevsalex.network.packets.ChangeThrottlePacket;
 import com.diamantino.stevevsalex.network.packets.RotationPacket;
+import com.diamantino.stevevsalex.upgrades.BoosterUpgrade;
+import com.diamantino.stevevsalex.upgrades.EngineUpgrade;
+import com.diamantino.stevevsalex.upgrades.base.Upgrade;
+import com.diamantino.stevevsalex.upgrades.base.UpgradeType;
 import com.diamantino.stevevsalex.utils.MathUtils;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -26,6 +36,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -41,10 +52,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
@@ -72,6 +89,8 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     private final WeaponType weaponType;
 
     private int onGroundTicks;
+    public final HashMap<ResourceLocation, Upgrade> upgrades = new HashMap<>();
+    public EngineUpgrade engineUpgrade = null;
 
     public float rotationRoll;
     public float prevRotationRoll;
@@ -84,6 +103,8 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public int projectilesToShoot;
     public int goldenHeartsTimeout = 0;
 
+    private final int networkUpdateInterval;
+
     public float propellerRotationOld;
     public float propellerRotationNew;
 
@@ -94,6 +115,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         super(entityTypeIn, worldIn);
 
         maxUpStep = 0.9999f;
+        networkUpdateInterval = entityTypeIn.updateInterval();
         setMaxSpeed(3f);
         vehichleName = name;
         this.weaponType = weaponType;
@@ -172,7 +194,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public static final TagKey<DimensionType> BLACKLISTED_DIMENSIONS_TAG = TagKey.create(Registry.DIMENSION_TYPE_REGISTRY, new ResourceLocation(MODID, "blacklisted_dimensions"));
 
     public boolean isPowered() {
-        return isAlive() && !level.dimensionTypeRegistration().is(BLACKLISTED_DIMENSIONS_TAG);
+        return isAlive() && !level.dimensionTypeRegistration().is(BLACKLISTED_DIMENSIONS_TAG) && (isCreative() || (engineUpgrade != null && engineUpgrade.isPowered()));
     }
 
     @Override
@@ -196,6 +218,18 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             if ((!hasPlayer)) {
                 ejectPassengers();
             }
+            return InteractionResult.SUCCESS;
+        }
+
+        if (itemStack.getItem() == SVAItems.WRENCH.get()) {
+            if (!level.isClientSide) {
+                NetworkHooks.openScreen((ServerPlayer) player, new SimpleMenuProvider((id, inv, p) -> new RemoveUpgradesContainer(id, getId()), Component.empty()), buf -> buf.writeVarInt(getId()));
+                return InteractionResult.CONSUME;
+            }
+            return InteractionResult.SUCCESS;
+        }
+
+        if (tryToAddUpgrade(player, itemStack)) {
             return InteractionResult.SUCCESS;
         }
 
@@ -343,10 +377,10 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         prevRotationRoll = rotationRoll;
         if (level.isClientSide) {
             propellerRotationOld = propellerRotationNew;
-            //if (isPowered()) {
+            if (isPowered()) {
                 int throttle = getThrottle();
                 propellerRotationNew += throttle * 0.1;
-            //}
+            }
         }
 
         if (getIsShooting()) {
@@ -412,7 +446,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
         Vec3 oldMotion = getDeltaMovement();
 
-        if (level.isClientSide /*&& isPowered()*/ && getThrottle() > 0) {
+        if (level.isClientSide && isPowered() && getThrottle() > 0) {
             PlaneSound.tryToPlay(this);
         }
 
@@ -437,6 +471,8 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
         //roll + yaw
         tickRoll(tempMotionVars);
+
+        tickUpgrades();
 
         //made so plane fully stops when moves slow, removing the slipperiness effect
         if (onGroundTicks > -50 && oldMotion.length() < 0.002 && getDeltaMovement().length() < 0.002) {
@@ -467,8 +503,11 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             }
         }
 
-        if (getHealth() <= 0 && onGround && !isRemoved()) {
-            crash(16);
+        if (getHealth() <= 0 && !isRemoved()) {
+            if (onGround)
+                crash(16);
+            else
+                setThrottle(0);
         }
 
         //back to q
@@ -511,6 +550,29 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
     protected float getMoveForward(Player player) {
         return player.zza;
+    }
+
+    public void tickUpgrades() {
+        List<ResourceLocation> upgradesToRemove = new ArrayList<>();
+        List<ResourceLocation> upgradesToUpdate = new ArrayList<>();
+        upgrades.forEach((rl, upgrade) -> {
+            upgrade.tick();
+            if (upgrade.removed) {
+                upgradesToRemove.add(rl);
+            } else if (upgrade.updateClient && !level.isClientSide) {
+                upgradesToUpdate.add(rl);
+                upgrade.updateClient = false;
+            }
+        });
+
+        for (ResourceLocation name : upgradesToRemove) {
+            upgrades.remove(name);
+        }
+        if (tickCount % networkUpdateInterval == 0) {
+            for (ResourceLocation name : upgradesToUpdate) {
+                SVANetworking.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpdateUpgradePacket(name, getId(), (ServerLevel) level));
+            }
+        }
     }
 
     public int getFuelCost() {
@@ -660,7 +722,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             onGroundTicks--;
         }
         float pitch = getGroundPitch();
-        if ((/*isPowered() &&*/ getPitchUp() > 0) || isOnWater()) {
+        if ((isPowered() && getPitchUp() > 0) || isOnWater()) {
             pitch = 0;
         } else if (getDeltaMovement().length() > tempMotionVars.takeOffSpeed) {
             pitch /= 2;
@@ -772,6 +834,11 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             entityData.set(HEALTH, health);
         }
 
+        if (compound.contains("upgrades")) {
+            CompoundTag upgradesNBT = compound.getCompound("upgrades");
+            deserializeUpgrades(upgradesNBT);
+        }
+
         setQ(new Quaternion(getXRot(), getYRot(), 0, true));
     }
 
@@ -780,6 +847,30 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         compound.putInt("health", entityData.get(HEALTH));
         compound.putInt("max_health", entityData.get(MAX_HEALTH));
         compound.putFloat("max_speed", entityData.get(MAX_SPEED));
+        compound.put("upgrades", getUpgradesNBT());
+    }
+
+    private void deserializeUpgrades(CompoundTag upgradesNBT) {
+        for (String key : upgradesNBT.getAllKeys()) {
+            ResourceLocation resourceLocation = new ResourceLocation(key);
+            UpgradeType upgradeType = SVARegistries.UPGRADE_TYPES.get().getValue(resourceLocation);
+            if (upgradeType != null) {
+                Upgrade upgrade = upgradeType.instanceSupplier.apply(this);
+                upgrade.deserializeNBT(upgradesNBT.getCompound(key));
+                upgrades.put(resourceLocation, upgrade);
+                if (upgradeType.isEngine) {
+                    engineUpgrade = (EngineUpgrade) upgrade;
+                }
+            }
+        }
+    }
+
+    private CompoundTag getUpgradesNBT() {
+        CompoundTag upgradesNBT = new CompoundTag();
+        for (Upgrade upgrade : upgrades.values()) {
+            upgradesNBT.put(SVARegistries.UPGRADE_TYPES.get().getKey(upgrade.getType()).toString(), upgrade.serializeNBT());
+        }
+        return upgradesNBT;
     }
 
     @Override
@@ -790,6 +881,123 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     @Override
     public boolean canBeCollidedWith() {
         return true;
+    }
+
+    @Override
+    public boolean canBeRiddenUnderFluidType(FluidType type, Entity rider) {
+        if (type == ForgeMod.WATER_TYPE.get() && upgrades.containsKey(SVAUpgrades.FLOATY_BEDDING.getId())) {
+            return true;
+        }
+
+        return super.canBeRiddenUnderFluidType(type, rider);
+    }
+
+    public boolean canAddUpgrade(UpgradeType upgradeType) {
+        if (upgradeType.isEngine && engineUpgrade != null) {
+            return false;
+        }
+        return !upgrades.containsKey(SVARegistries.UPGRADE_TYPES.get().getKey(upgradeType));
+    }
+
+    protected boolean tryToAddUpgrade(Player playerEntity, ItemStack itemStack) {
+        Optional<UpgradeType> upgradeTypeOptional = SVAUpgrades.getUpgradeFromItem(itemStack.getItem());
+        return upgradeTypeOptional.map(upgradeType -> {
+            if (canAddUpgrade(upgradeType)) {
+                Upgrade upgrade = upgradeType.instanceSupplier.apply(this);
+                addUpgrade(playerEntity, itemStack, upgrade);
+                return true;
+            }
+            return false;
+        }).orElse(false);
+    }
+
+    protected void addUpgrade(Player playerEntity, ItemStack itemStack, Upgrade upgrade) {
+        upgrade.onApply(itemStack, playerEntity);
+
+        if (!playerEntity.isCreative()) {
+            itemStack.shrink(1);
+        }
+        UpgradeType upgradeType = upgrade.getType();
+        upgrades.put(SVARegistries.UPGRADE_TYPES.get().getKey(upgradeType), upgrade);
+        if (upgradeType.isEngine) {
+            engineUpgrade = (EngineUpgrade) upgrade;
+        }
+        if (!level.isClientSide) {
+            SVANetworking.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpdateUpgradePacket(SVARegistries.UPGRADE_TYPES.get().getKey(upgradeType), getId(), (ServerLevel) level, true));
+        }
+    }
+
+    public void writeUpdateUpgradePacket(ResourceLocation upgradeID, FriendlyByteBuf buffer) {
+        buffer.writeVarInt(getId());
+        buffer.writeResourceLocation(upgradeID);
+        upgrades.get(upgradeID).writePacket(buffer);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public void readUpdateUpgradePacket(ResourceLocation upgradeID, FriendlyByteBuf buffer, boolean newUpgrade) {
+        if (newUpgrade) {
+            UpgradeType upgradeType = SVARegistries.UPGRADE_TYPES.get().getValue(upgradeID);
+            Upgrade upgrade = upgradeType.instanceSupplier.apply(this);
+            upgrades.put(upgradeID, upgrade);
+            if (upgradeType.isEngine) {
+                engineUpgrade = (EngineUpgrade) upgrade;
+            }
+        }
+
+        upgrades.get(upgradeID).readPacket(buffer);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (upgrades != null) {
+            for (Upgrade upgrade : upgrades.values()) {
+                LazyOptional<T> lazyOptional = upgrade.getCapability(cap, side);
+                if (lazyOptional.isPresent()) {
+                    return lazyOptional;
+                }
+            }
+        }
+        return super.getCapability(cap, side);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        Collection<Upgrade> upgrades = this.upgrades.values();
+        buffer.writeVarInt(upgrades.size());
+        for (Upgrade upgrade : upgrades) {
+            ResourceLocation upgradeID = SVARegistries.UPGRADE_TYPES.get().getKey(upgrade.getType());
+            buffer.writeResourceLocation(upgradeID);
+            upgrade.writePacket(buffer);
+        }
+    }
+
+    @Override
+    public void readSpawnData(FriendlyByteBuf additionalData) {
+        int upgradesSize = additionalData.readVarInt();
+        for (int i = 0; i < upgradesSize; i++) {
+            ResourceLocation upgradeID = additionalData.readResourceLocation();
+            UpgradeType upgradeType = SVARegistries.UPGRADE_TYPES.get().getValue(upgradeID);
+            Upgrade upgrade = upgradeType.instanceSupplier.apply(this);
+            upgrades.put(upgradeID, upgrade);
+            if (upgradeType.isEngine) {
+                engineUpgrade = (EngineUpgrade) upgrade;
+            }
+            upgrade.readPacket(additionalData);
+        }
+    }
+
+    public void removeUpgrade(ResourceLocation upgradeID) {
+        Upgrade upgrade = upgrades.remove(upgradeID);
+        if (upgrade != null) {
+            upgrade.onRemoved();
+            upgrade.remove();
+
+            if (!level.isClientSide) {
+                SVANetworking.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpgradeRemovedPacket(upgradeID, getId()));
+            }
+        }
     }
 
     @Override
@@ -864,12 +1072,25 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         }
     }
 
+    public boolean hasStorageUpgrade() {
+        for (Upgrade upgrade : upgrades.values()) {
+            if (upgrade.hasStorage())
+                return true;
+        }
+
+        return false;
+    }
+
     public boolean getOnGround() {
         return onGround || onGroundTicks > 1;
     }
 
     public boolean isOnWater() {
         return level.getBlockState(new BlockPos(position().add(0, 0.4, 0))).getBlock() == Blocks.WATER;
+    }
+
+    public boolean isCreative() {
+        return getControllingPassenger() instanceof Player && ((Player) getControllingPassenger()).isCreative();
     }
 
     @Override
@@ -1030,17 +1251,12 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         return SVAConfigs.PLANE_CAMERA_DISTANCE_MULTIPLIER.get();
     }
 
-    public void writeUpdateUpgradePacket(ResourceLocation upgradeID, FriendlyByteBuf buffer) {
-        buffer.writeVarInt(getId());
-        buffer.writeResourceLocation(upgradeID);
-    }
-
     private static final TempMotionVars TEMP_MOTION_VARS = new TempMotionVars();
 
     public void changeThrottle(ChangeThrottlePacket.Type type) {
         int throttle = getThrottle();
         if (type == ChangeThrottlePacket.Type.UP) {
-            if (throttle < MAX_THROTTLE) {
+            if (throttle < MAX_THROTTLE || (upgrades.containsKey(SVAUpgrades.BOOSTER.getId()) && throttle < BoosterUpgrade.MAX_THROTTLE)) {
                 setThrottle(throttle + 1);
             }
         } else if (throttle > 0) {
@@ -1062,16 +1278,6 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
     public void setPitchUp(byte pitchUp) {
         entityData.set(PITCH_UP, pitchUp);
-    }
-
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf additionalData) {
-
     }
 
     protected static class TempMotionVars {

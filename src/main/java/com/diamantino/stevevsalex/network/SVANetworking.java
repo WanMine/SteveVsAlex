@@ -45,11 +45,47 @@ public class SVANetworking {
 
         INSTANCE.registerMessage(
                 ++id,
+                OpenInventoryPacket.class,
+                OpenInventoryPacket::toBytes,
+                OpenInventoryPacket::new,
+                OpenInventoryPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
+
+        INSTANCE.registerMessage(
+                ++id,
+                UpdateUpgradePacket.class,
+                UpdateUpgradePacket::toBytes,
+                UpdateUpgradePacket::new,
+                UpdateUpgradePacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
+
+        INSTANCE.registerMessage(
+                ++id,
                 OpenPlaneInventoryPacket.class,
                 OpenPlaneInventoryPacket::toBytes,
                 OpenPlaneInventoryPacket::new,
                 OpenPlaneInventoryPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
+
+        INSTANCE.registerMessage(
+                ++id,
+                RemoveUpgradePacket.class,
+                RemoveUpgradePacket::toBytes,
+                RemoveUpgradePacket::new,
+                RemoveUpgradePacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
+
+        INSTANCE.registerMessage(
+                ++id,
+                UpgradeRemovedPacket.class,
+                UpgradeRemovedPacket::toBytes,
+                UpgradeRemovedPacket::new,
+                UpgradeRemovedPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
 
         INSTANCE.registerMessage(
