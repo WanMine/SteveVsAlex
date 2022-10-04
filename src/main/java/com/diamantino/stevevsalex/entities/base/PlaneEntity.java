@@ -1,18 +1,19 @@
 package com.diamantino.stevevsalex.entities.base;
 
-import com.diamantino.stevevsalex.SteveVsAlex;
 import com.diamantino.stevevsalex.client.sounds.PlaneSound;
 import com.diamantino.stevevsalex.container.RemoveUpgradesContainer;
-import com.diamantino.stevevsalex.entities.SteveArrowEntity;
-import com.diamantino.stevevsalex.entities.SteveOmbEntity;
+import com.diamantino.stevevsalex.entities.steve.SteveArrowEntity;
+import com.diamantino.stevevsalex.entities.steve.SteveOmbEntity;
 import com.diamantino.stevevsalex.network.packets.UpdateUpgradePacket;
 import com.diamantino.stevevsalex.network.packets.UpgradeRemovedPacket;
 import com.diamantino.stevevsalex.registries.*;
 import com.diamantino.stevevsalex.network.SVANetworking;
 import com.diamantino.stevevsalex.network.packets.ChangeThrottlePacket;
 import com.diamantino.stevevsalex.network.packets.RotationPacket;
-import com.diamantino.stevevsalex.upgrades.BoosterUpgrade;
-import com.diamantino.stevevsalex.upgrades.EngineUpgrade;
+import com.diamantino.stevevsalex.upgrades.ReinforcedArmorUpgrade;
+import com.diamantino.stevevsalex.upgrades.RocketBoosterUpgrade;
+import com.diamantino.stevevsalex.upgrades.StorageUpgrade;
+import com.diamantino.stevevsalex.upgrades.VehicleEngineUpgrade;
 import com.diamantino.stevevsalex.upgrades.base.Upgrade;
 import com.diamantino.stevevsalex.upgrades.base.UpgradeType;
 import com.diamantino.stevevsalex.utils.MathUtils;
@@ -86,11 +87,13 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public Quaternion Q_Client = new Quaternion(Quaternion.ONE);
     public Quaternion Q_Prev = new Quaternion(Quaternion.ONE);
 
+    public Teams team;
+
     private final WeaponType weaponType;
 
     private int onGroundTicks;
     public final HashMap<ResourceLocation, Upgrade> upgrades = new HashMap<>();
-    public EngineUpgrade engineUpgrade = null;
+    public VehicleEngineUpgrade vehicleEngineUpgrade = null;
 
     public float rotationRoll;
     public float prevRotationRoll;
@@ -104,6 +107,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public int goldenHeartsTimeout = 0;
 
     private final int networkUpdateInterval;
+    protected boolean hasConsumedAmmo;
 
     public float propellerRotationOld;
     public float propellerRotationNew;
@@ -111,9 +115,10 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public float minigunRotationOld;
     public float minigunRotationNew;
 
-    public PlaneEntity(EntityType<? extends PlaneEntity> entityTypeIn, Level worldIn, String name, WeaponType weaponType) {
+    public PlaneEntity(EntityType<? extends PlaneEntity> entityTypeIn, Level worldIn, String name, WeaponType weaponType, Teams team) {
         super(entityTypeIn, worldIn);
 
+        this.team = team;
         maxUpStep = 0.9999f;
         networkUpdateInterval = entityTypeIn.updateInterval();
         setMaxSpeed(3f);
@@ -194,7 +199,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public static final TagKey<DimensionType> BLACKLISTED_DIMENSIONS_TAG = TagKey.create(Registry.DIMENSION_TYPE_REGISTRY, new ResourceLocation(MODID, "blacklisted_dimensions"));
 
     public boolean isPowered() {
-        return isAlive() && !level.dimensionTypeRegistration().is(BLACKLISTED_DIMENSIONS_TAG) && (isCreative() || (engineUpgrade != null && engineUpgrade.isPowered()));
+        return isAlive() && !level.dimensionTypeRegistration().is(BLACKLISTED_DIMENSIONS_TAG) && (isCreative() || (vehicleEngineUpgrade != null && vehicleEngineUpgrade.isPowered()));
     }
 
     @Override
@@ -240,27 +245,42 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         }
     }
 
+    protected StorageUpgrade getStorageUpgrade() {
+        Upgrade upgrade = upgrades.get(SVAUpgrades.STORAGE_UPGRADE.getId());
+
+        if (upgrade instanceof StorageUpgrade storageUpgrade) {
+            return storageUpgrade;
+        }
+
+        return null;
+    }
+
     @Override
     public boolean hurt(DamageSource source, float amount) {
         Entity entity = source.getDirectEntity();
         if (entity == getControllingPassenger() && entity instanceof Player && !getIsShooting()) {
-            switch (weaponType) {
-                case GUN -> {}
-                case MINIGUN -> {
-                    projectilesToShoot = 16;
+            if (getStorageUpgrade() != null) {
+                switch (weaponType) {
+                    case GUN -> {}
+                    case MINIGUN -> {
+                        projectilesToShoot = 16;
 
-                    setIsShooting(true);
-                }
-                case BOMB -> {
-                    setIsShooting(true);
+                        setIsShooting(true);
+                    }
+                    case BOMB -> {
+                        setIsShooting(true);
 
-                    SteveOmbEntity bombEntity = new SteveOmbEntity(SVAEntityTypes.STEVE_OMB.get(), level, 100);
+                        if (consumeAmmo(getStorageUpgrade(), (Player) getControllingPassenger(), Teams.getBombItemForTeam(team))) {
 
-                    bombEntity.setPos(this.position());
+                            BombEntity bombEntity = Teams.createBombForTeam(team, level, 100);
 
-                    level.addFreshEntity(bombEntity);
+                            bombEntity.setPos(this.position());
 
-                    setIsShooting(false);
+                            level.addFreshEntity(bombEntity);
+                        }
+
+                        setIsShooting(false);
+                    }
                 }
             }
 
@@ -269,6 +289,11 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
         if (getOnGround() && entity instanceof Player) {
             amount *= 3;
+        } else {
+            Upgrade upgrade = upgrades.get(SVAUpgrades.REINFORCED_ARMOR_UPGRADE.getId());
+            if (upgrade instanceof ReinforcedArmorUpgrade armorUpgrade) {
+                amount = armorUpgrade.getReducedDamage(amount);
+            }
         }
 
         setTimeSinceHit(20);
@@ -306,40 +331,20 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         return true;
     }
 
-    private void shoot(Player player) {
-        Vector3f motion1 = transformPos(new Vector3f(0, 0, (float) (1 + getDeltaMovement().length())));
-        Vec3 motion = new Vec3(motion1);
+    protected boolean consumeAmmo(StorageUpgrade storageUpgrade, Player player, Item itemToConsume) {
+        for (int i = 0; i < storageUpgrade.itemStackHandler.getSlots(); i++) {
+            if (storageUpgrade.itemStackHandler.getStackInSlot(i).getItem() == itemToConsume) {
+                hasConsumedAmmo = true;
 
-        Vector3f pos1 = transformPos(new Vector3f(1.45f, 1.1f, 0f));
-        Vector3f pos2 = transformPos(new Vector3f(-1.45f, 1.1f, 0f));
+                if (!player.isCreative()) {
+                    storageUpgrade.itemStackHandler.extractItem(i, 1, false);
+                }
 
-        double x1 = pos1.x() + getX();
-        double y1 = pos1.y() + getY();
-        double z1 = pos1.z() + getZ();
+                return true;
+            }
+        }
 
-        double x2 = pos2.x() + getX();
-        double y2 = pos2.y() + getY();
-        double z2 = pos2.z() + getZ();
-
-        SteveArrowEntity steveArrowEntity1 = new SteveArrowEntity(level, x1, y1, z1);
-        steveArrowEntity1.setOwner(player);
-        steveArrowEntity1.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
-        steveArrowEntity1.setXRot(getXRot());
-        steveArrowEntity1.setYRot(getYRot());
-
-        SteveArrowEntity steveArrowEntity2 = new SteveArrowEntity(level, x2, y2, z2);
-        steveArrowEntity2.setOwner(player);
-        steveArrowEntity2.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
-        steveArrowEntity2.setXRot(getXRot());
-        steveArrowEntity2.setYRot(getYRot());
-
-        /*if (!player.isCreative()) {
-            itemStackHandler.extractItem(0, 1, false);
-            steevArrowEntity.pickup = AbstractArrow.Pickup.ALLOWED;
-        }*/
-
-        level.addFreshEntity(steveArrowEntity1);
-        level.addFreshEntity(steveArrowEntity2);
+        return false;
     }
 
     private void explode() {
@@ -380,20 +385,6 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             if (isPowered()) {
                 int throttle = getThrottle();
                 propellerRotationNew += throttle * 0.1;
-            }
-        }
-
-        if (getIsShooting()) {
-            minigunRotationOld = minigunRotationNew;
-
-            minigunRotationNew += 1;
-
-            if (projectilesToShoot >= 1) {
-                shoot((Player) getControllingPassenger());
-
-                projectilesToShoot--;
-            } else {
-                setIsShooting(false);
             }
         }
 
@@ -859,7 +850,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
                 upgrade.deserializeNBT(upgradesNBT.getCompound(key));
                 upgrades.put(resourceLocation, upgrade);
                 if (upgradeType.isEngine) {
-                    engineUpgrade = (EngineUpgrade) upgrade;
+                    vehicleEngineUpgrade = (VehicleEngineUpgrade) upgrade;
                 }
             }
         }
@@ -885,7 +876,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
     @Override
     public boolean canBeRiddenUnderFluidType(FluidType type, Entity rider) {
-        if (type == ForgeMod.WATER_TYPE.get() && upgrades.containsKey(SVAUpgrades.FLOATY_BEDDING.getId())) {
+        if (type == ForgeMod.WATER_TYPE.get() && upgrades.containsKey(SVAUpgrades.FLOATING_PAD_UPGRADE.getId())) {
             return true;
         }
 
@@ -893,7 +884,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     }
 
     public boolean canAddUpgrade(UpgradeType upgradeType) {
-        if (upgradeType.isEngine && engineUpgrade != null) {
+        if (upgradeType.isEngine && vehicleEngineUpgrade != null) {
             return false;
         }
         return !upgrades.containsKey(SVARegistries.UPGRADE_TYPES.get().getKey(upgradeType));
@@ -920,7 +911,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         UpgradeType upgradeType = upgrade.getType();
         upgrades.put(SVARegistries.UPGRADE_TYPES.get().getKey(upgradeType), upgrade);
         if (upgradeType.isEngine) {
-            engineUpgrade = (EngineUpgrade) upgrade;
+            vehicleEngineUpgrade = (VehicleEngineUpgrade) upgrade;
         }
         if (!level.isClientSide) {
             SVANetworking.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpdateUpgradePacket(SVARegistries.UPGRADE_TYPES.get().getKey(upgradeType), getId(), (ServerLevel) level, true));
@@ -940,7 +931,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             Upgrade upgrade = upgradeType.instanceSupplier.apply(this);
             upgrades.put(upgradeID, upgrade);
             if (upgradeType.isEngine) {
-                engineUpgrade = (EngineUpgrade) upgrade;
+                vehicleEngineUpgrade = (VehicleEngineUpgrade) upgrade;
             }
         }
 
@@ -982,7 +973,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             Upgrade upgrade = upgradeType.instanceSupplier.apply(this);
             upgrades.put(upgradeID, upgrade);
             if (upgradeType.isEngine) {
-                engineUpgrade = (EngineUpgrade) upgrade;
+                vehicleEngineUpgrade = (VehicleEngineUpgrade) upgrade;
             }
             upgrade.readPacket(additionalData);
         }
@@ -1256,7 +1247,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     public void changeThrottle(ChangeThrottlePacket.Type type) {
         int throttle = getThrottle();
         if (type == ChangeThrottlePacket.Type.UP) {
-            if (throttle < MAX_THROTTLE || (upgrades.containsKey(SVAUpgrades.BOOSTER.getId()) && throttle < BoosterUpgrade.MAX_THROTTLE)) {
+            if (throttle < MAX_THROTTLE || (upgrades.containsKey(SVAUpgrades.ROCKET_BOOSTER_UPGRADE.getId()) && throttle < RocketBoosterUpgrade.MAX_THROTTLE)) {
                 setThrottle(throttle + 1);
             }
         } else if (throttle > 0) {

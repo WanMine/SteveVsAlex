@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.client.models;
 
-import com.diamantino.stevevsalex.entities.SteveAneEntity;
+import com.diamantino.stevevsalex.entities.base.PlaneEntity;
+import com.diamantino.stevevsalex.entities.steve.SteveAneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -10,7 +11,7 @@ import net.minecraft.client.model.geom.builders.*;
 
 import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getPropellerRotation;
 
-public class SteveAneModel<T extends SteveAneEntity> extends EntityModel<SteveAneEntity> {
+public class PlaneModel<T extends PlaneEntity> extends EntityModel<PlaneEntity> {
 
 	private final ModelPart Full;
 	private final ModelPart Propeller1;
@@ -18,7 +19,7 @@ public class SteveAneModel<T extends SteveAneEntity> extends EntityModel<SteveAn
 	private final ModelPart Propeller3;
 	private final ModelPart Propeller4;
 
-	public SteveAneModel(ModelPart root) {
+	public PlaneModel(ModelPart root) {
 		this.Full = root.getChild("Full");
 		this.Propeller1 = Full.getChild("rightala2").getChild("Propeller1");
 		this.Propeller2 = Full.getChild("leftala").getChild("Propeller2");
@@ -1040,7 +1041,7 @@ public class SteveAneModel<T extends SteveAneEntity> extends EntityModel<SteveAn
 	}
 
 	@Override
-	public void setupAnim(SteveAneEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(PlaneEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		Propeller1.zRot = getPropellerRotation(entity, limbSwing);
 		Propeller2.zRot = getPropellerRotation(entity, limbSwing);
 		Propeller3.zRot = -getPropellerRotation(entity, limbSwing);

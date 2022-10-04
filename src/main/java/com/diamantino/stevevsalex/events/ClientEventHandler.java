@@ -1,6 +1,5 @@
 package com.diamantino.stevevsalex.events;
 
-import com.diamantino.stevevsalex.SteveVsAlex;
 import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
 import com.diamantino.stevevsalex.client.gui.RemoveUpgradesScreen;
 import com.diamantino.stevevsalex.client.gui.StorageScreen;
@@ -8,7 +7,7 @@ import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.network.SVANetworking;
 import com.diamantino.stevevsalex.network.packets.*;
 import com.diamantino.stevevsalex.registries.SVAContainers;
-import com.diamantino.stevevsalex.upgrades.BoosterUpgrade;
+import com.diamantino.stevevsalex.upgrades.RocketBoosterUpgrade;
 import com.diamantino.stevevsalex.utils.ClientUtils;
 import com.diamantino.stevevsalex.utils.MathUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -131,14 +130,14 @@ public class ClientEventHandler {
                     ClientUtils.blit(matrixStack, -90, scaledWidth - 24, scaledHeight - 42, 0, 84, 22, 40);
                     int throttle = planeEntity.getThrottle();
                     if (throttle > 0) {
-                        int throttleScaled = throttle * 28 / BoosterUpgrade.MAX_THROTTLE;
+                        int throttleScaled = throttle * 28 / RocketBoosterUpgrade.MAX_THROTTLE;
                         ClientUtils.blit(matrixStack, -90, scaledWidth - 28 + 10, scaledHeight - 42 + 6 + 28 - throttleScaled, 22, 90 + 28 - throttleScaled, 10, throttleScaled);
                     }
 
-                    if (planeEntity.engineUpgrade != null) {
+                    if (planeEntity.vehicleEngineUpgrade != null) {
                         ItemStack offhandStack = mc.player.getOffhandItem();
                         HumanoidArm primaryHand = mc.player.getMainArm();
-                        planeEntity.engineUpgrade.renderPowerHUD(matrixStack, (primaryHand == HumanoidArm.LEFT || offhandStack.isEmpty()) ? HumanoidArm.LEFT : HumanoidArm.RIGHT, scaledWidth, scaledHeight, partialTicks);
+                        planeEntity.vehicleEngineUpgrade.renderPowerHUD(matrixStack, (primaryHand == HumanoidArm.LEFT || offhandStack.isEmpty()) ? HumanoidArm.LEFT : HumanoidArm.RIGHT, scaledWidth, scaledHeight, partialTicks);
                     }
                 }
             }

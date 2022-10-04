@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.client.models;
 
-import com.diamantino.stevevsalex.entities.SteveOmbEntity;
+import com.diamantino.stevevsalex.entities.base.BombEntity;
+import com.diamantino.stevevsalex.entities.steve.SteveOmbEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -10,11 +11,11 @@ import net.minecraft.client.model.geom.builders.*;
 
 import static com.diamantino.stevevsalex.client.renderers.BombRenderer.getBombRotation;
 
-public class SteveOmbModel<T extends SteveOmbEntity> extends EntityModel<SteveOmbEntity> {
+public class BombModel<T extends BombEntity> extends EntityModel<BombEntity> {
 
 	private final ModelPart Full;
 
-	public SteveOmbModel(ModelPart root) {
+	public BombModel(ModelPart root) {
 		this.Full = root.getChild("Full");
 	}
 
@@ -44,7 +45,7 @@ public class SteveOmbModel<T extends SteveOmbEntity> extends EntityModel<SteveOm
 	}
 
 	@Override
-	public void setupAnim(SteveOmbEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(BombEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		Full.xRot = getBombRotation(entity, limbSwing);
 	}
 

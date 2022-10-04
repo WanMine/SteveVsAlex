@@ -4,28 +4,21 @@ import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAItems;
 import com.diamantino.stevevsalex.registries.SVAUpgrades;
 import com.diamantino.stevevsalex.upgrades.base.Upgrade;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 
-public class ArmorUpgrade extends Upgrade {
+public class ReinforcedArmorUpgrade extends Upgrade {
 
     private int protectionLevel = 0;
 
-    public ArmorUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.ARMOR.get(), planeEntity);
+    public ReinforcedArmorUpgrade(PlaneEntity planeEntity) {
+        super(SVAUpgrades.REINFORCED_ARMOR_UPGRADE.get(), planeEntity);
     }
 
     @SuppressWarnings("deprecation")
@@ -55,7 +48,7 @@ public class ArmorUpgrade extends Upgrade {
 
     @Override
     public void onRemoved() {
-        ItemStack itemStack = SVAItems.ARMOR.get().getDefaultInstance();
+        ItemStack itemStack = SVAItems.REINFORCED_ARMOR_UPGRADE.get().getDefaultInstance();
         if (protectionLevel > 0) {
             itemStack.enchant(Enchantments.ALL_DAMAGE_PROTECTION, protectionLevel);
         }

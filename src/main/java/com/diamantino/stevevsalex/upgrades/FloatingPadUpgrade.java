@@ -10,10 +10,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
-public class FloatingUpgrade extends Upgrade {
+public class FloatingPadUpgrade extends Upgrade {
 
-    public FloatingUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.FLOATY_BEDDING.get(), planeEntity);
+    public FloatingPadUpgrade(PlaneEntity planeEntity) {
+        super(SVAUpgrades.FLOATING_PAD_UPGRADE.get(), planeEntity);
     }
 
     @Override
@@ -37,6 +37,6 @@ public class FloatingUpgrade extends Upgrade {
 
     @Override
     public void onRemoved() {
-        planeEntity.spawnAtLocation(SVAItems.FLOATY_BEDDING.get());
+        planeEntity.spawnAtLocation(SVAItems.FLOATING_PAD_UPGRADE.get());
     }
 }

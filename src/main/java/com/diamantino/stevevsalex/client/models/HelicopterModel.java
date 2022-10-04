@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.client.models;
 
-import com.diamantino.stevevsalex.entities.SteveCopterEntity;
+import com.diamantino.stevevsalex.entities.base.HelicopterEntity;
+import com.diamantino.stevevsalex.entities.steve.SteveCopterEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -11,7 +12,7 @@ import net.minecraft.client.model.geom.builders.*;
 import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getMinigunRotation;
 import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getPropellerRotation;
 
-public class SteveCopterModel<T extends SteveCopterEntity> extends EntityModel<SteveCopterEntity> {
+public class HelicopterModel<T extends HelicopterEntity> extends EntityModel<HelicopterEntity> {
 
 	private final ModelPart Full;
 	private final ModelPart Propeller;
@@ -19,7 +20,7 @@ public class SteveCopterModel<T extends SteveCopterEntity> extends EntityModel<S
 	private final ModelPart Minigun1;
 	private final ModelPart Minigun2;
 
-	public SteveCopterModel(ModelPart root) {
+	public HelicopterModel(ModelPart root) {
 		this.Full = root.getChild("Full");
 		this.Propeller = this.Full.getChild("Propeller");
 		this.BackPropeller = this.Full.getChild("BackPropeller");
@@ -300,7 +301,7 @@ public class SteveCopterModel<T extends SteveCopterEntity> extends EntityModel<S
 	}
 
 	@Override
-	public void setupAnim(SteveCopterEntity p_102618_, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
+	public void setupAnim(HelicopterEntity p_102618_, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
 		Propeller.yRot = getPropellerRotation(p_102618_, p_102619_);
 		BackPropeller.xRot = getPropellerRotation(p_102618_, p_102619_);
 		if (p_102618_.getIsShooting()) {

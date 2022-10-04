@@ -9,10 +9,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class HealingUpgrade extends Upgrade {
+public class HealVehicleUpgrade extends Upgrade {
 
-    public HealingUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.HEALING.get(), planeEntity);
+    public HealVehicleUpgrade(PlaneEntity planeEntity) {
+        super(SVAUpgrades.HEAL_VEHICLE.get(), planeEntity);
     }
 
     private int cooldown = 10;
@@ -57,6 +57,6 @@ public class HealingUpgrade extends Upgrade {
 
     @Override
     public void onRemoved() {
-        planeEntity.spawnAtLocation(SVAItems.HEALING.get().getDefaultInstance());
+        planeEntity.spawnAtLocation(SVAItems.HEAL_VEHICLE.get().getDefaultInstance());
     }
 }

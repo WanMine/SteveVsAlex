@@ -1,6 +1,5 @@
 package com.diamantino.stevevsalex.client.renderers;
 
-import com.diamantino.stevevsalex.entities.SteveCopterEntity;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.utils.MathUtils;
 import com.mojang.blaze3d.vertex.PoseStack;

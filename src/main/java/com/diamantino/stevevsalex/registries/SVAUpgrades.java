@@ -2,8 +2,8 @@ package com.diamantino.stevevsalex.registries;
 
 import com.diamantino.stevevsalex.upgrades.*;
 import com.diamantino.stevevsalex.upgrades.base.UpgradeType;
-import com.diamantino.stevevsalex.upgrades.engines.ElectricEngineUpgrade;
-import com.diamantino.stevevsalex.upgrades.engines.FurnaceEngineUpgrade;
+import com.diamantino.stevevsalex.upgrades.engines.ElectricVehicleEngineUpgrade;
+import com.diamantino.stevevsalex.upgrades.engines.FurnaceVehicleEngineUpgrade;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -34,13 +34,13 @@ public class SVAUpgrades {
         return Optional.empty();
     }
 
-    public static final RegistryObject<UpgradeType> FLOATY_BEDDING = UPGRADE_TYPES.register("floaty_bedding", () -> new UpgradeType(FloatingUpgrade::new));
-    public static final RegistryObject<UpgradeType> BOOSTER = UPGRADE_TYPES.register("booster", () -> new UpgradeType(BoosterUpgrade::new));
-    public static final RegistryObject<UpgradeType> HEALING = UPGRADE_TYPES.register("healing", () -> new UpgradeType(HealingUpgrade::new));
-    public static final RegistryObject<UpgradeType> ARMOR = UPGRADE_TYPES.register("armor", () -> new UpgradeType(ArmorUpgrade::new));
-    public static final RegistryObject<UpgradeType> SOLAR_PANEL = UPGRADE_TYPES.register("solar_panel", () -> new UpgradeType(SolarPanelUpgrade::new));
-    public static final RegistryObject<UpgradeType> FURNACE_ENGINE = UPGRADE_TYPES.register("furnace_engine", () -> new UpgradeType(FurnaceEngineUpgrade::new, true));
-    public static final RegistryObject<UpgradeType> ELECTRIC_ENGINE = UPGRADE_TYPES.register("electric_engine", () -> new UpgradeType(ElectricEngineUpgrade::new, true));
-    public static final RegistryObject<UpgradeType> CHEST = UPGRADE_TYPES.register("chest", () -> new UpgradeType(StorageUpgrade::new));
-    public static final RegistryObject<UpgradeType> JUKEBOX = UPGRADE_TYPES.register("jukebox", () -> new UpgradeType(JukeboxUpgrade::new));
+    public static final RegistryObject<UpgradeType> FLOATING_PAD_UPGRADE = UPGRADE_TYPES.register("floating_pad_upgrade", () -> new UpgradeType(FloatingPadUpgrade::new));
+    public static final RegistryObject<UpgradeType> ROCKET_BOOSTER_UPGRADE = UPGRADE_TYPES.register("rocket_booster_upgrade", () -> new UpgradeType(RocketBoosterUpgrade::new));
+    public static final RegistryObject<UpgradeType> HEAL_VEHICLE = UPGRADE_TYPES.register("heal_vehicle", () -> new UpgradeType(HealVehicleUpgrade::new));
+    public static final RegistryObject<UpgradeType> REINFORCED_ARMOR_UPGRADE = UPGRADE_TYPES.register("reinforced_armor_upgrade", () -> new UpgradeType(ReinforcedArmorUpgrade::new));
+    public static final RegistryObject<UpgradeType> SOLAR_GENERATOR_UPGRADE = UPGRADE_TYPES.register("solar_generator_upgrade", () -> new UpgradeType(SolarPanelUpgrade::new));
+    public static final RegistryObject<UpgradeType> COMBUSTION_VEHICLE_ENGINE = UPGRADE_TYPES.register("combustion_vehicle_engine", () -> new UpgradeType(FurnaceVehicleEngineUpgrade::new, true));
+    public static final RegistryObject<UpgradeType> ELECTRIC_VEHICLE_ENGINE = UPGRADE_TYPES.register("electric_vehicle_engine", () -> new UpgradeType(ElectricVehicleEngineUpgrade::new, true));
+    public static final RegistryObject<UpgradeType> STORAGE_UPGRADE = UPGRADE_TYPES.register("storage_upgrade", () -> new UpgradeType(StorageUpgrade::new));
+    public static final RegistryObject<UpgradeType> JUKEBOX_UPGRADE = UPGRADE_TYPES.register("jukebox_upgrade", () -> new UpgradeType(JukeboxUpgrade::new));
 }

@@ -30,7 +30,7 @@ public class StorageUpgrade extends Upgrade implements MenuProvider {
     public final LazyOptional<ItemStackHandler> itemHandlerLazyOptional = LazyOptional.of(() -> itemStackHandler);
 
     public StorageUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.CHEST.get(), planeEntity);
+        super(SVAUpgrades.STORAGE_UPGRADE.get(), planeEntity);
     }
 
     @Override

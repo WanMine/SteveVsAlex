@@ -5,7 +5,7 @@ import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAItems;
 import com.diamantino.stevevsalex.registries.SVAUpgrades;
-import com.diamantino.stevevsalex.upgrades.EngineUpgrade;
+import com.diamantino.stevevsalex.upgrades.VehicleEngineUpgrade;
 import com.diamantino.stevevsalex.utils.ClientUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -26,15 +26,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
-public class FurnaceEngineUpgrade extends EngineUpgrade {
+public class FurnaceVehicleEngineUpgrade extends VehicleEngineUpgrade {
 
     public final ItemStackHandler itemStackHandler = new ItemStackHandler();
     public final LazyOptional<ItemStackHandler> itemHandlerLazyOptional = LazyOptional.of(() -> itemStackHandler);
     public int burnTime;
     public int burnTimeTotal;
 
-    public FurnaceEngineUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.FURNACE_ENGINE.get(), planeEntity);
+    public FurnaceVehicleEngineUpgrade(PlaneEntity planeEntity) {
+        super(SVAUpgrades.COMBUSTION_VEHICLE_ENGINE.get(), planeEntity);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class FurnaceEngineUpgrade extends EngineUpgrade {
 
     @Override
     public void onRemoved() {
-        planeEntity.spawnAtLocation(SVAItems.FURNACE_ENGINE.get());
+        planeEntity.spawnAtLocation(SVAItems.COMBUSTION_VEHICLE_ENGINE.get());
         planeEntity.spawnAtLocation(itemStackHandler.getStackInSlot(0));
     }
 

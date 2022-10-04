@@ -6,16 +6,16 @@ import com.diamantino.stevevsalex.upgrades.base.UpgradeType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.entity.HumanoidArm;
 
-public abstract class EngineUpgrade extends Upgrade {
+public abstract class VehicleEngineUpgrade extends Upgrade {
 
-    public EngineUpgrade(UpgradeType type, PlaneEntity planeEntity) {
+    public VehicleEngineUpgrade(UpgradeType type, PlaneEntity planeEntity) {
         super(type, planeEntity);
     }
 
     @Override
     public void remove() {
         super.remove();
-        planeEntity.engineUpgrade = null;
+        planeEntity.vehicleEngineUpgrade = null;
     }
 
     public abstract boolean isPowered();

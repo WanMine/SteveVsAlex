@@ -4,7 +4,6 @@ import com.diamantino.stevevsalex.events.ClientEventHandler;
 import com.diamantino.stevevsalex.network.SVANetworking;
 import com.diamantino.stevevsalex.registries.*;
 import com.mojang.logging.LogUtils;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -40,15 +39,15 @@ public class SteveVsAlex {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            SVAUpgrades.registerUpgradeItem(SVAItems.FLOATY_BEDDING.get(), SVAUpgrades.FLOATY_BEDDING.get());
-            SVAUpgrades.registerUpgradeItem(SVAItems.BOOSTER.get(), SVAUpgrades.BOOSTER.get());
-            SVAUpgrades.registerUpgradeItem(SVAItems.HEALING.get(), SVAUpgrades.HEALING.get());
-            SVAUpgrades.registerUpgradeItem(SVAItems.ARMOR.get(), SVAUpgrades.ARMOR.get());
-            SVAUpgrades.registerUpgradeItem(SVAItems.SOLAR_PANEL.get(), SVAUpgrades.SOLAR_PANEL.get());
-            SVAUpgrades.registerUpgradeItem(SVAItems.FURNACE_ENGINE.get(), SVAUpgrades.FURNACE_ENGINE.get());
-            SVAUpgrades.registerUpgradeItem(SVAItems.ELECTRIC_ENGINE.get(), SVAUpgrades.ELECTRIC_ENGINE.get());
-            SVAUpgrades.registerUpgradeItem(Items.CHEST, SVAUpgrades.CHEST.get());
-            SVAUpgrades.registerUpgradeItem(Items.JUKEBOX, SVAUpgrades.JUKEBOX.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.FLOATING_PAD_UPGRADE.get(), SVAUpgrades.FLOATING_PAD_UPGRADE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.ROCKET_BOOSTER_UPGRADE.get(), SVAUpgrades.ROCKET_BOOSTER_UPGRADE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.HEAL_VEHICLE.get(), SVAUpgrades.HEAL_VEHICLE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.REINFORCED_ARMOR_UPGRADE.get(), SVAUpgrades.REINFORCED_ARMOR_UPGRADE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.SOLAR_GENERATOR_UPGRADE.get(), SVAUpgrades.SOLAR_GENERATOR_UPGRADE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.COMBUSTION_VEHICLE_ENGINE.get(), SVAUpgrades.COMBUSTION_VEHICLE_ENGINE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.ELECTRIC_VEHICLE_ENGINE.get(), SVAUpgrades.ELECTRIC_VEHICLE_ENGINE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.STORAGE_UPGRADE.get(), SVAUpgrades.STORAGE_UPGRADE.get());
+            SVAUpgrades.registerUpgradeItem(SVAItems.JUKEBOX_UPGRADE.get(), SVAUpgrades.JUKEBOX_UPGRADE.get());
         });
     }
 

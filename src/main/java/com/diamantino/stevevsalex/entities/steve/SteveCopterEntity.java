@@ -1,6 +1,8 @@
-package com.diamantino.stevevsalex.entities;
+package com.diamantino.stevevsalex.entities.steve;
 
 import com.diamantino.stevevsalex.entities.base.HelicopterEntity;
+import com.diamantino.stevevsalex.entities.base.ProjectileType;
+import com.diamantino.stevevsalex.entities.base.Teams;
 import com.diamantino.stevevsalex.entities.base.WeaponType;
 import com.mojang.math.Vector3f;
 import net.minecraft.world.entity.Entity;
@@ -10,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SteveCopterEntity extends HelicopterEntity {
     public SteveCopterEntity(EntityType<? extends HelicopterEntity> p_20966_, Level p_20967_) {
-        super(p_20966_, p_20967_, "steve_copter", WeaponType.MINIGUN);
+        super(p_20966_, p_20967_, "steve_copter", WeaponType.MINIGUN, Teams.STEVE, ProjectileType.ARROW);
     }
 
     @Override

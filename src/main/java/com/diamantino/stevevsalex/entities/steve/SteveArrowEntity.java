@@ -1,4 +1,4 @@
-package com.diamantino.stevevsalex.entities;
+package com.diamantino.stevevsalex.entities.steve;
 
 import com.diamantino.stevevsalex.entities.base.ProjectileEntity;
 import com.diamantino.stevevsalex.registries.SVAEntityTypes;

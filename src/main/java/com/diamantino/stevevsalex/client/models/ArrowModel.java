@@ -1,6 +1,7 @@
 package com.diamantino.stevevsalex.client.models;
 
-import com.diamantino.stevevsalex.entities.SteveArrowEntity;
+import com.diamantino.stevevsalex.entities.base.ProjectileEntity;
+import com.diamantino.stevevsalex.entities.steve.SteveArrowEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -8,13 +9,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
-import static com.diamantino.stevevsalex.client.renderers.BombRenderer.getBombRotation;
-
-public class SteveArrowModel<T extends SteveArrowEntity> extends EntityModel<SteveArrowEntity> {
+public class ArrowModel<T extends ProjectileEntity> extends EntityModel<ProjectileEntity> {
 
     private final ModelPart Full;
 
-    public SteveArrowModel(ModelPart root) {
+    public ArrowModel(ModelPart root) {
         this.Full = root.getChild("Full");
     }
 
@@ -44,7 +43,7 @@ public class SteveArrowModel<T extends SteveArrowEntity> extends EntityModel<Ste
     }
 
     @Override
-    public void setupAnim(SteveArrowEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(ProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
     }
 

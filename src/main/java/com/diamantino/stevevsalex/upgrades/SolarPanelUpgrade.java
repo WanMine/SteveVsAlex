@@ -4,17 +4,10 @@ import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAItems;
 import com.diamantino.stevevsalex.registries.SVAUpgrades;
 import com.diamantino.stevevsalex.upgrades.base.Upgrade;
-import com.diamantino.stevevsalex.upgrades.engines.ElectricEngineUpgrade;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import com.diamantino.stevevsalex.upgrades.engines.ElectricVehicleEngineUpgrade;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -24,7 +17,7 @@ public class SolarPanelUpgrade extends Upgrade {
     private final short MAX_PER_TICK;
 
     public SolarPanelUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.SOLAR_PANEL.get(), planeEntity);
+        super(SVAUpgrades.SOLAR_GENERATOR_UPGRADE.get(), planeEntity);
 
         MAX_PER_TICK = 10;
     }
@@ -35,7 +28,7 @@ public class SolarPanelUpgrade extends Upgrade {
         Level world = entity.getLevel();
         if (canSeeSun(world, entity.getOnPos().above())) {
             float brightness = MAX_PER_TICK * getSunBrightness(entity.getLevel(), 1.0F);
-            if (entity.engineUpgrade instanceof ElectricEngineUpgrade engine) {
+            if (entity.vehicleEngineUpgrade instanceof ElectricVehicleEngineUpgrade engine) {
                 engine.energyStorage.receiveEnergy((int) brightness, false);
             }
         }
@@ -53,7 +46,7 @@ public class SolarPanelUpgrade extends Upgrade {
 
     @Override
     public void onRemoved() {
-        planeEntity.spawnAtLocation(SVAItems.SOLAR_PANEL.get().getDefaultInstance());
+        planeEntity.spawnAtLocation(SVAItems.SOLAR_GENERATOR_UPGRADE.get().getDefaultInstance());
     }
 
     private static boolean canSeeSun(@Nullable Level level, BlockPos pos) {

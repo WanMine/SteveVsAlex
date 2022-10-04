@@ -4,7 +4,7 @@ import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAItems;
 import com.diamantino.stevevsalex.registries.SVAUpgrades;
-import com.diamantino.stevevsalex.upgrades.EngineUpgrade;
+import com.diamantino.stevevsalex.upgrades.VehicleEngineUpgrade;
 import com.diamantino.stevevsalex.utils.ClientUtils;
 import com.diamantino.stevevsalex.utils.EnergyStorageWithSet;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,15 +23,15 @@ import javax.annotation.Nullable;
 
 import static com.diamantino.stevevsalex.SteveVsAlex.MODID;
 
-public class ElectricEngineUpgrade extends EngineUpgrade {
+public class ElectricVehicleEngineUpgrade extends VehicleEngineUpgrade {
 
     public static final int CAPACITY = 1_500_000;
 
     public final EnergyStorageWithSet energyStorage = new EnergyStorageWithSet(CAPACITY);
     public final LazyOptional<EnergyStorage> energyStorageLazyOptional = LazyOptional.of(() -> energyStorage);
 
-    public ElectricEngineUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.ELECTRIC_ENGINE.get(), planeEntity);
+    public ElectricVehicleEngineUpgrade(PlaneEntity planeEntity) {
+        super(SVAUpgrades.ELECTRIC_VEHICLE_ENGINE.get(), planeEntity);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ElectricEngineUpgrade extends EngineUpgrade {
 
     @Override
     public void onRemoved() {
-        planeEntity.spawnAtLocation(SVAItems.ELECTRIC_ENGINE.get());
+        planeEntity.spawnAtLocation(SVAItems.ELECTRIC_VEHICLE_ENGINE.get());
     }
 
     @Override

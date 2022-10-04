@@ -18,49 +18,39 @@ public class SVAItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
     public static Dictionary<String, RegistryObject<PlaneItem>> airVehichlesItems = new Hashtable<>();
-    public static Dictionary<String, RegistryObject<BombItem>> bombItems = new Hashtable<>();
-    public static Dictionary<String, RegistryObject<ProjectileItem>> projectileItems = new Hashtable<>();
 
     //Vehicles
     public static final RegistryObject<PlaneItem> STEVE_COPTER_ITEM = registerAirVehicle("steve_copter", () -> new PlaneItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), SVAEntityTypes.STEVE_COPTER));
     public static final RegistryObject<PlaneItem> STEVE_ANE_ITEM = registerAirVehicle("steve_ane", () -> new PlaneItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), SVAEntityTypes.STEVE_ANE));
-    public static final RegistryObject<BombItem> STEVE_OMB_ITEM = registerBomb("steve_omb", () -> new BombItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), SVAEntityTypes.STEVE_OMB));
-    public static final RegistryObject<ProjectileItem> STEVE_ARROW_ITEM = registerProjectile("steve_arrow", () -> new ProjectileItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), SVAEntityTypes.STEVE_ARROW));
+    public static final RegistryObject<PlaneItem> ALEX_COPTER_ITEM = registerAirVehicle("alex_copter", () -> new PlaneItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), SVAEntityTypes.ALEX_COPTER));
+    public static final RegistryObject<PlaneItem> ALEX_ANE_ITEM = registerAirVehicle("alex_ane", () -> new PlaneItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), SVAEntityTypes.ALEX_ANE));
 
     //Upgrades
-    public static final RegistryObject<Item> FLOATY_BEDDING = ITEMS.register("floaty_bedding", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
-    public static final RegistryObject<Item> BOOSTER = ITEMS.register("booster", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
-    public static final RegistryObject<Item> HEALING = ITEMS.register("healing", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
-    public static final RegistryObject<Item> ARMOR = ITEMS.register("armor", () -> new ArmorUpgradeItem(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
-    public static final RegistryObject<Item> SOLAR_PANEL = ITEMS.register("solar_panel", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
+    public static final RegistryObject<Item> FLOATING_PAD_UPGRADE = ITEMS.register("floating_pad_upgrade", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
+    public static final RegistryObject<Item> ROCKET_BOOSTER_UPGRADE = ITEMS.register("rocket_booster_upgrade", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
+    public static final RegistryObject<Item> HEAL_VEHICLE = ITEMS.register("heal_vehicle", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
+    public static final RegistryObject<Item> REINFORCED_ARMOR_UPGRADE = ITEMS.register("reinforced_armor_upgrade", () -> new ArmorUpgradeItem(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
+    public static final RegistryObject<Item> SOLAR_GENERATOR_UPGRADE = ITEMS.register("solar_generator_upgrade", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
+    public static final RegistryObject<Item> JUKEBOX_UPGRADE = ITEMS.register("jukebox_upgrade", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
+    public static final RegistryObject<Item> STORAGE_UPGRADE = ITEMS.register("storage_upgrade", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS).stacksTo(1)));
 
     //Engines
-    public static final RegistryObject<Item> ELECTRIC_ENGINE = ITEMS.register("electric_engine", () -> new DescriptionItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), Component.translatable(MODID + ".press_key", Component.keybind("key.plane_inventory_open.desc"))));
-    public static final RegistryObject<Item> FURNACE_ENGINE = ITEMS.register("furnace_engine", () -> new DescriptionItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), Component.translatable(MODID + ".press_key", Component.keybind("key.plane_inventory_open.desc"))));
+    public static final RegistryObject<Item> ELECTRIC_VEHICLE_ENGINE = ITEMS.register("electric_vehicle_engine", () -> new DescriptionItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), Component.translatable(MODID + ".press_key", Component.keybind("key.plane_inventory_open.desc"))));
+    public static final RegistryObject<Item> COMBUSTION_VEHICLE_ENGINE = ITEMS.register("combustion_vehicle_engine", () -> new DescriptionItem(new Item.Properties().tab(SVACreativeTabs.ITEMS), Component.translatable(MODID + ".press_key", Component.keybind("key.plane_inventory_open.desc"))));
 
     //Items
     public static final RegistryObject<Item> WRENCH = ITEMS.register("wrench", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
+    public static final RegistryObject<Item> STEVE_ARROW_MAG_ITEM = ITEMS.register("steve_arrow_mag", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
+    public static final RegistryObject<Item> STEVE_OMB_ITEM = ITEMS.register("steve_omb", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
+    public static final RegistryObject<Item> STEVE_ARROW_ITEM = ITEMS.register("steve_arrow", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
+    public static final RegistryObject<Item> ALEX_ARROW_MAG_ITEM = ITEMS.register("alex_arrow_mag", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
+    public static final RegistryObject<Item> ALEX_OMB_ITEM = ITEMS.register("alex_omb", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
+    public static final RegistryObject<Item> ALEX_ARROW_ITEM = ITEMS.register("alex_arrow", () -> new Item(new Item.Properties().tab(SVACreativeTabs.ITEMS)));
 
     public static RegistryObject<PlaneItem> registerAirVehicle(String name, Supplier<? extends PlaneItem> supplier) {
         RegistryObject<PlaneItem> item = ITEMS.register(name, supplier);
 
         airVehichlesItems.put(name, item);
-
-        return item;
-    }
-
-    public static RegistryObject<BombItem> registerBomb(String name, Supplier<? extends BombItem> supplier) {
-        RegistryObject<BombItem> item = ITEMS.register(name, supplier);
-
-        bombItems.put(name, item);
-
-        return item;
-    }
-
-    public static RegistryObject<ProjectileItem> registerProjectile(String name, Supplier<? extends ProjectileItem> supplier) {
-        RegistryObject<ProjectileItem> item = ITEMS.register(name, supplier);
-
-        projectileItems.put(name, item);
 
         return item;
     }

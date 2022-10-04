@@ -1,5 +1,6 @@
 package com.diamantino.stevevsalex.entities.base;
 
+import com.diamantino.stevevsalex.entities.steve.SteveArrowEntity;
 import com.diamantino.stevevsalex.registries.SVAConfigs;
 import com.diamantino.stevevsalex.registries.SVAItems;
 import com.diamantino.stevevsalex.utils.MathUtils;
@@ -11,6 +12,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -22,8 +24,12 @@ public abstract class HelicopterEntity extends PlaneEntity {
 
     public static final EntityDataAccessor<Boolean> MOVE_UP = SynchedEntityData.defineId(HelicopterEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public HelicopterEntity(EntityType<? extends HelicopterEntity> p_20966_, Level p_20967_, String name, WeaponType weaponType) {
-        super(p_20966_, p_20967_, name, weaponType);
+    private ProjectileType projectileType;
+
+    public HelicopterEntity(EntityType<? extends HelicopterEntity> p_20966_, Level p_20967_, String name, WeaponType weaponType, Teams team, ProjectileType projectileType) {
+        super(p_20966_, p_20967_, name, weaponType, team);
+
+        this.projectileType = projectileType;
     }
 
     @Override
@@ -40,6 +46,31 @@ public abstract class HelicopterEntity extends PlaneEntity {
         motionTempMotionVars.dragQuad *= 10;
         motionTempMotionVars.dragMul *= 2;
         return motionTempMotionVars;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (getIsShooting()) {
+            if (!hasConsumedAmmo) {
+                if (!consumeAmmo(getStorageUpgrade(), (Player) getControllingPassenger(), Teams.getMAGItem(projectileType, team)))
+                    setIsShooting(false);
+            } else {
+                minigunRotationOld = minigunRotationNew;
+
+                minigunRotationNew += 1;
+
+                if (projectilesToShoot >= 1) {
+                    shoot((Player) getControllingPassenger());
+
+                    projectilesToShoot--;
+                } else {
+                    hasConsumedAmmo = false;
+                    setIsShooting(false);
+                }
+            }
+        }
     }
 
     @Override
@@ -151,5 +182,36 @@ public abstract class HelicopterEntity extends PlaneEntity {
 
     public void setMoveUp(boolean up) {
         entityData.set(MOVE_UP, up);
+    }
+
+    private void shoot(Player player) {
+        Vector3f motion1 = transformPos(new Vector3f(0, 0, (float) (1 + getDeltaMovement().length())));
+        Vec3 motion = new Vec3(motion1);
+
+        Vector3f pos1 = transformPos(new Vector3f(1.45f, 1.1f, 0f));
+        Vector3f pos2 = transformPos(new Vector3f(-1.45f, 1.1f, 0f));
+
+        double x1 = pos1.x() + getX();
+        double y1 = pos1.y() + getY();
+        double z1 = pos1.z() + getZ();
+
+        double x2 = pos2.x() + getX();
+        double y2 = pos2.y() + getY();
+        double z2 = pos2.z() + getZ();
+
+        ProjectileEntity projectileEntity1 = Teams.createProjectileForTeam(team, projectileType, level, x1, y1, z1);
+        projectileEntity1.setOwner(player);
+        projectileEntity1.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
+        projectileEntity1.setXRot(getXRot());
+        projectileEntity1.setYRot(getYRot());
+
+        ProjectileEntity projectileEntity2 = Teams.createProjectileForTeam(team, projectileType, level, x2, y2, z2);
+        projectileEntity2.setOwner(player);
+        projectileEntity2.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
+        projectileEntity2.setXRot(getXRot());
+        projectileEntity2.setYRot(getYRot());
+
+        level.addFreshEntity(projectileEntity1);
+        level.addFreshEntity(projectileEntity2);
     }
 }

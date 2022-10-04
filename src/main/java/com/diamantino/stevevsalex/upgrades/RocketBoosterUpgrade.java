@@ -20,7 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class BoosterUpgrade extends Upgrade {
+public class RocketBoosterUpgrade extends Upgrade {
     public static final int MAX_THROTTLE = 12;
 
     public static final int FUEL_PER_GUNPOWDER = 20;
@@ -49,8 +49,8 @@ public class BoosterUpgrade extends Upgrade {
         fuel = buffer.readVarInt();
     }
 
-    public BoosterUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.BOOSTER.get(), planeEntity);
+    public RocketBoosterUpgrade(PlaneEntity planeEntity) {
+        super(SVAUpgrades.ROCKET_BOOSTER_UPGRADE.get(), planeEntity);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class BoosterUpgrade extends Upgrade {
 
     @Override
     public void onRemoved() {
-        planeEntity.spawnAtLocation(SVAItems.BOOSTER.get());
+        planeEntity.spawnAtLocation(SVAItems.ROCKET_BOOSTER_UPGRADE.get());
         if (planeEntity.getThrottle() > PlaneEntity.MAX_THROTTLE) {
             planeEntity.setThrottle(PlaneEntity.MAX_THROTTLE);
         }

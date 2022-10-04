@@ -22,7 +22,7 @@ public class JukeboxUpgrade extends Upgrade {
     private ItemStack record = ItemStack.EMPTY;
 
     public JukeboxUpgrade(PlaneEntity planeEntity) {
-        super(SVAUpgrades.JUKEBOX.get(), planeEntity);
+        super(SVAUpgrades.JUKEBOX_UPGRADE.get(), planeEntity);
     }
 
     @Override
