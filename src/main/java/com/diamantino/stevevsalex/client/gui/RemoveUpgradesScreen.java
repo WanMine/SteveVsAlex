@@ -22,7 +22,7 @@ public class RemoveUpgradesScreen extends AbstractContainerScreen<RemoveUpgrades
         super.init();
         Entity entity = minecraft.level.getEntity(menu.planeID);
         if (entity instanceof PlaneEntity) {
-            buttonsList = new UpgradeButtonsList(minecraft, 120, height, 32, height - 61, 20, (PlaneEntity) entity);
+            buttonsList = new UpgradeButtonsList(minecraft, 240, height, 32, height - 61, 20, (PlaneEntity) entity);
             addRenderableWidget(buttonsList);
         } else {
             onClose();
