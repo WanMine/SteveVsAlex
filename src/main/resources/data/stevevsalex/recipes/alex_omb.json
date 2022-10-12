@@ -1,0 +1,15 @@
+{
+  "type": "stevevsalex:ammo_workbench",
+
+  "explosive_item": {
+    "item": "minecraft:tnt"
+  },
+  "explosive_item_amount": 16,
+  "hull": {
+    "item": "stevevsalex:alexium_hull"
+  },
+  "hull_amount": 6,
+  "result": {
+    "item": "stevevsalex:alex_omb"
+  }
+}

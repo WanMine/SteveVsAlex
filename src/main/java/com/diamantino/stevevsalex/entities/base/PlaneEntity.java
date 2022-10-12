@@ -1,9 +1,7 @@
 package com.diamantino.stevevsalex.entities.base;
 
 import com.diamantino.stevevsalex.client.sounds.PlaneSound;
-import com.diamantino.stevevsalex.container.RemoveUpgradesContainer;
-import com.diamantino.stevevsalex.entities.steve.SteveArrowEntity;
-import com.diamantino.stevevsalex.entities.steve.SteveOmbEntity;
+import com.diamantino.stevevsalex.containers.RemoveUpgradesContainer;
 import com.diamantino.stevevsalex.network.packets.UpdateUpgradePacket;
 import com.diamantino.stevevsalex.network.packets.UpgradeRemovedPacket;
 import com.diamantino.stevevsalex.registries.*;
@@ -288,7 +286,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         }
 
         if (getOnGround() && entity instanceof Player) {
-            amount *= 3;
+            amount *= 3f;
         } else {
             Upgrade upgrade = upgrades.get(SVAUpgrades.REINFORCED_ARMOR_UPGRADE.getId());
             if (upgrade instanceof ReinforcedArmorUpgrade armorUpgrade) {
@@ -297,7 +295,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         }
 
         setTimeSinceHit(20);
-        setDamageTaken(getDamageTaken() + 10 * amount);
+        setDamageTaken(getDamageTaken() + 10f * amount);
 
         if (isInvulnerableTo(source) || damageTimeout > 0) {
             return false;
@@ -352,12 +350,12 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
                 getX(),
                 getY(),
                 getZ(),
-                5, 1, 1, 1, 2);
+                5, 1d, 1d, 1d, 2d);
         ((ServerLevel) level).sendParticles(ParticleTypes.POOF,
                 getX(),
                 getY(),
                 getZ(),
-                10, 1, 1, 1, 1);
+                10, 1d, 1d, 1d, 1d);
         level.explode(this, getX(), getY(), getZ(), 4.0F, Explosion.BlockInteraction.BREAK);
     }
 
@@ -384,7 +382,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             propellerRotationOld = propellerRotationNew;
             if (isPowered()) {
                 int throttle = getThrottle();
-                propellerRotationNew += throttle * 0.1;
+                propellerRotationNew += throttle * 0.1f;
             }
         }
 
@@ -406,24 +404,24 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
         TempMotionVars tempMotionVars = getMotionVars();
         if (isNoGravity()) {
-            tempMotionVars.gravity = 0;
-            tempMotionVars.maxLift = 0;
+            tempMotionVars.gravity = 0d;
+            tempMotionVars.maxLift = 0f;
             tempMotionVars.push = 0.00f;
-            tempMotionVars.passiveEnginePush = 0;
+            tempMotionVars.passiveEnginePush = 0f;
         }
         Entity controllingPassenger = getControllingPassenger();
         if (controllingPassenger instanceof Player playerEntity) {
             tempMotionVars.moveForward = getMoveForward(playerEntity);
             tempMotionVars.moveStrafing = playerEntity.xxa;
         } else {
-            tempMotionVars.moveForward = 0;
-            tempMotionVars.moveStrafing = 0;
+            tempMotionVars.moveForward = 0f;
+            tempMotionVars.moveStrafing = 0f;
             setSprinting(false);
         }
         tempMotionVars.turnThreshold = SVAConfigs.TURN_THRESHOLD.get() / 100d;
 
         if (Math.abs(tempMotionVars.moveStrafing) < tempMotionVars.turnThreshold) {
-            tempMotionVars.moveStrafing = 0;
+            tempMotionVars.moveStrafing = 0f;
         }
 
         Quaternion q;
@@ -444,7 +442,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         tempMotionVars.push = 0.00625f * getThrottle();
 
         //motion and rotation interpolation + lift.
-        if (getDeltaMovement().length() > 0.05) {
+        if (getDeltaMovement().length() > 0.05f) {
             q = tickRotateMotion(tempMotionVars, q, getDeltaMovement());
         }
         boolean doPitch = true;
@@ -466,7 +464,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         tickUpgrades();
 
         //made so plane fully stops when moves slow, removing the slipperiness effect
-        if (onGroundTicks > -50 && oldMotion.length() < 0.002 && getDeltaMovement().length() < 0.002) {
+        if (onGroundTicks > -50 && oldMotion.length() < 0.002f && getDeltaMovement().length() < 0.002f) {
             setDeltaMovement(Vec3.ZERO);
         }
         reapplyPosition();
@@ -475,11 +473,11 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             double speedBefore = Math.sqrt(getHorizontalDistanceSqr(getDeltaMovement()));
             boolean onGroundOld = onGround;
             Vec3 motion = getDeltaMovement();
-            if (motion.lengthSqr() > 0.25 || getPitchUp() != 0) {
+            if (motion.lengthSqr() > 0.25f || getPitchUp() != 0f) {
                 onGround = true;
             }
             move(MoverType.SELF, motion);
-            onGround = ((motion.y()) == 0.0) ? onGroundOld : onGround;
+            onGround = ((motion.y()) == 0.0f) ? onGroundOld : onGround;
             if (horizontalCollision && !level.isClientSide && onGroundTicks <= 0) {
                 if (getHealth() <= 0) {
                     crash(16);
@@ -572,7 +570,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
     protected TempMotionVars getMotionVars() {
         TEMP_MOTION_VARS.reset();
-        TEMP_MOTION_VARS.maxPushSpeed = getMaxSpeed() * 10;
+        TEMP_MOTION_VARS.maxPushSpeed = getMaxSpeed() * 10f;
         return TEMP_MOTION_VARS;
     }
 
@@ -583,23 +581,23 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         rotationRoll = (float) angles.roll;
 
         float d = (float) wrapSubtractDegrees(yRotO, getYRot());
-        if (rotationRoll >= 90 && prevRotationRoll <= 90) {
-            d = 0;
+        if (rotationRoll >= 90f && prevRotationRoll <= 90f) {
+            d = 0f;
         }
         int diff = 3;
 
         deltaRotationTicks = Math.min(10, Math.max((int) Math.abs(deltaRotationLeft) * 5, deltaRotationTicks));
-        deltaRotationLeft *= 0.7;
+        deltaRotationLeft *= 0.7f;
         deltaRotationLeft += d;
         deltaRotationLeft = wrapDegrees(deltaRotationLeft);
         deltaRotation = Math.min(Math.abs(deltaRotationLeft), diff) * Math.signum(deltaRotationLeft);
         deltaRotationLeft -= deltaRotation;
-        if (!(deltaRotation > 0)) {
+        if (!(deltaRotation > 0f)) {
             deltaRotationTicks--;
         }
     }
 
-    protected float pitchSpeed = 0;
+    protected float pitchSpeed = 0f;
 
     protected void tickPitch(TempMotionVars tempMotionVars) {
         float pitch;
@@ -611,9 +609,9 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             } else if (getPitchUp() < 0) {
                 pitchSpeed -= 0.5f;
             } else {
-                if (pitchSpeed < 0) {
+                if (pitchSpeed < 0f) {
                     pitchSpeed += 0.5f;
-                } else if (pitchSpeed > 0) {
+                } else if (pitchSpeed > 0f) {
                     pitchSpeed -= 0.5f;
                 }
             }
@@ -623,7 +621,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         setXRot(getXRot() + pitch);
     }
 
-    protected float rollSpeed = 0;
+    protected float rollSpeed = 0f;
 
     protected void tickRoll(TempMotionVars tempMotionVars) {
         if (getHealth() <= 0) {
@@ -631,11 +629,11 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             return;
         }
 
-        double turn = 0;
+        double turn = 0d;
 
         if (getOnGround() || isOnWater()) {
-            turn = tempMotionVars.moveStrafing > 0 ? 3 : tempMotionVars.moveStrafing == 0 ? 0 : -3;
-            rotationRoll = lerpAngle(0.1f, rotationRoll, 0);
+            turn = tempMotionVars.moveStrafing > 0f ? 3f : tempMotionVars.moveStrafing == 0f ? 0f : -3f;
+            rotationRoll = lerpAngle(0.1f, rotationRoll, 0f);
 
         } else {
             if (tempMotionVars.moveStrafing > 0.0f) {
@@ -643,9 +641,9 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
             } else if (tempMotionVars.moveStrafing < 0.0f) {
                 rollSpeed -= 0.5f;
             } else {
-                if (rollSpeed < 0) {
+                if (rollSpeed < 0f) {
                     rollSpeed += 0.5f;
-                } else if (rollSpeed > 0) {
+                } else if (rollSpeed > 0f) {
                     rollSpeed -= 0.5f;
                 }
             }
@@ -660,33 +658,33 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     protected void tickMotion(TempMotionVars tempMotionVars) {
         Vec3 motion;
         if (!isPowered()) {
-            tempMotionVars.push = 0;
+            tempMotionVars.push = 0f;
         }
         motion = getDeltaMovement();
         double speed = motion.length();
-        double brakesMul = getThrottle() == 0 ? 5.0 : 1.0;
+        double brakesMul = getThrottle() == 0 ? 5.0d : 1.0d;
         speed -= (speed * speed * tempMotionVars.dragQuad + speed * tempMotionVars.dragMul + tempMotionVars.drag) * brakesMul;
-        speed = Math.max(speed, 0);
+        speed = Math.max(speed, 0d);
         if (speed > tempMotionVars.maxSpeed) {
-            speed = Mth.lerp(0.2, speed, tempMotionVars.maxSpeed);
+            speed = Mth.lerp(0.2f, speed, tempMotionVars.maxSpeed);
         }
 
-        if (speed == 0) {
+        if (speed == 0d) {
             motion = Vec3.ZERO;
         }
-        if (motion.length() > 0) {
+        if (motion.length() > 0d) {
             motion = motion.scale(speed / motion.length());
         }
 
         Vec3 pushVec = new Vec3(getTickPush(tempMotionVars));
-        if (pushVec.length() != 0 && motion.length() > 0.1) {
+        if (pushVec.length() != 0 && motion.length() > 0.1f) {
             double dot = normalizedDotProduct(pushVec, motion);
-            pushVec = pushVec.scale(Mth.clamp(1 - dot * speed / (tempMotionVars.maxPushSpeed * (tempMotionVars.push + 0.05)), 0, 2));
+            pushVec = pushVec.scale(Mth.clamp(1d - dot * speed / (tempMotionVars.maxPushSpeed * (tempMotionVars.push + 0.05f)), 0d, 2d));
         }
 
         motion = motion.add(pushVec);
 
-        motion = motion.add(0, tempMotionVars.gravity, 0);
+        motion = motion.add(0, tempMotionVars.gravity, 0d);
 
         setDeltaMovement(motion);
     }
@@ -696,7 +694,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
     }
 
     protected boolean tickOnGround(TempMotionVars tempMotionVars) {
-        if (getDeltaMovement().lengthSqr() < 0.01 && getOnGround()) {
+        if (getDeltaMovement().lengthSqr() < 0.01f && getOnGround()) {
             notMovingTime += 1;
         } else {
             notMovingTime = 0;
@@ -714,14 +712,14 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         }
         float pitch = getGroundPitch();
         if ((isPowered() && getPitchUp() > 0) || isOnWater()) {
-            pitch = 0;
+            pitch = 0f;
         } else if (getDeltaMovement().length() > tempMotionVars.takeOffSpeed) {
-            pitch /= 2;
+            pitch /= 2f;
         }
         setXRot(lerpAngle(0.1f, getXRot(), pitch));
 
-        if (degreesDifferenceAbs(getXRot(), 0) > 1 && getDeltaMovement().length() < 0.1) {
-            tempMotionVars.push /= 5; //runs while the plane is taking off
+        if (degreesDifferenceAbs(getXRot(), 0) > 1 && getDeltaMovement().length() < 0.1f) {
+            tempMotionVars.push /= 5f; //runs while the plane is taking off
         }
         if (getDeltaMovement().length() < tempMotionVars.takeOffSpeed) {
             //                rotationPitch = lerpAngle(0.2f, rotationPitch, pitch);
@@ -751,7 +749,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         float yaw = MathUtils.getYaw(motion);
         float pitch = MathUtils.getPitch(motion);
         if (degreesDifferenceAbs(yaw, getYRot()) > 5 && (getOnGround() || isOnWater())) {
-            setDeltaMovement(motion.scale(0.98));
+            setDeltaMovement(motion.scale(0.98f));
         }
 
         float d = degreesDifferenceAbs(pitch, getXRot());
@@ -773,7 +771,7 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
         setDeltaMovement(rotationToVector(lerpAngle180(0.1f, yaw, getYRot()),
                 lerpAngle180(tempMotionVars.pitchToMotion * d, pitch, getXRot()) + lift,
                 speed));
-        if (!getOnGround() && !isOnWater() && motion.length() > 0.1) {
+        if (!getOnGround() && !isOnWater() && motion.length() > 0.1f) {
 
             if (degreesDifferenceAbs(pitch, getXRot()) > 90) {
                 pitch = wrapDegrees(pitch + 180);
@@ -1090,13 +1088,13 @@ public abstract class PlaneEntity extends Entity implements IEntityAdditionalSpa
 
         int index = getPassengers().indexOf(passenger);
         if (index == 0) {
-            Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()) - 0.2f, 5.8f));
+            Vector3f pos = transformPos(new Vector3f(0f, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()) - 0.2f, 5.8f));
             passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
         } else if (index == 1) {
-            Vector3f pos = transformPos(new Vector3f(-1, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), -1.3f));
+            Vector3f pos = transformPos(new Vector3f(-1f, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), -1.3f));
             passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
         } else if (index == 2) {
-            Vector3f pos = transformPos(new Vector3f(1, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), -1.3f));
+            Vector3f pos = transformPos(new Vector3f(1f, (float) (getPassengersRidingOffset() + passenger.getMyRidingOffset()), -1.3f));
             passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
         }
     }

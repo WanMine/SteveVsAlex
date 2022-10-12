@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SHA",
+    "HUH",
+    "AHS"
+  ],
+  "key": {
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "U": {
+      "item": "stevevsalex:upgrade_base"
+    },
+    "H": {
+      "item": "minecraft:shield"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:reinforced_armor_upgrade"
+  }
+}

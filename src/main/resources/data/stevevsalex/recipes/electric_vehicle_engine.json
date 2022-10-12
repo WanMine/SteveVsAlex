@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIA",
+    "BEB",
+    "ARS"
+  ],
+  "key": {
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "E": {
+      "item": "stevevsalex:engine_base"
+    },
+    "B": {
+      "item": "stevevsalex:battery"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:electric_vehicle_engine"
+  }
+}

@@ -7,6 +7,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import static com.diamantino.stevevsalex.SteveVsAlex.MODID;
 
@@ -22,7 +23,7 @@ public class SVADataSerializers {
             .register("quaternion", () -> new EntityDataSerializer<>() {
 
                 @Override
-                public void write(FriendlyByteBuf buf, Quaternion q) {
+                public void write(@NotNull FriendlyByteBuf buf, @NotNull Quaternion q) {
                     buf.writeFloat(q.i());
                     buf.writeFloat(q.j());
                     buf.writeFloat(q.k());
@@ -30,7 +31,7 @@ public class SVADataSerializers {
                 }
 
                 @Override
-                public Quaternion read(FriendlyByteBuf buf) {
+                public @NotNull Quaternion read(@NotNull FriendlyByteBuf buf) {
                     try {
                         return new Quaternion(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
                     } catch (IndexOutOfBoundsException e) {
@@ -40,7 +41,7 @@ public class SVADataSerializers {
                 }
 
                 @Override
-                public Quaternion copy(Quaternion q) {
+                public @NotNull Quaternion copy(@NotNull Quaternion q) {
                     return new Quaternion(q);
                 }
             });

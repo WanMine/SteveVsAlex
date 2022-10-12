@@ -1,8 +1,6 @@
 package com.diamantino.stevevsalex.events;
 
-import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
-import com.diamantino.stevevsalex.client.gui.RemoveUpgradesScreen;
-import com.diamantino.stevevsalex.client.gui.StorageScreen;
+import com.diamantino.stevevsalex.client.gui.*;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.network.SVANetworking;
 import com.diamantino.stevevsalex.network.packets.*;
@@ -62,9 +60,11 @@ public class ClientEventHandler {
     }
 
     public static void clientSetup() {
-        MenuScreens.register(SVAContainers.PLANE_INVENTORY.get(), PlaneInventoryScreen::new);
+        MenuScreens.register(SVAContainers.VEHICLE_INVENTORY.get(), VehicleInventoryScreen::new);
         MenuScreens.register(SVAContainers.UPGRADES_REMOVAL.get(), RemoveUpgradesScreen::new);
         MenuScreens.register(SVAContainers.STORAGE.get(), StorageScreen::new);
+        MenuScreens.register(SVAContainers.AMMO_WORKBENCH.get(), AmmoWorkbenchScreen::new);
+        MenuScreens.register(SVAContainers.VEHICLE_WORKBENCH.get(), VehicleWorkbenchScreen::new);
     }
 
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
@@ -134,7 +134,7 @@ public class ClientEventHandler {
                         ClientUtils.blit(matrixStack, -90, scaledWidth - 28 + 10, scaledHeight - 42 + 6 + 28 - throttleScaled, 22, 90 + 28 - throttleScaled, 10, throttleScaled);
                     }
 
-                    if (planeEntity.vehicleEngineUpgrade != null) {
+                    if (planeEntity.vehicleEngineUpgrade != null && mc.player != null) {
                         ItemStack offhandStack = mc.player.getOffhandItem();
                         HumanoidArm primaryHand = mc.player.getMainArm();
                         planeEntity.vehicleEngineUpgrade.renderPowerHUD(matrixStack, (primaryHand == HumanoidArm.LEFT || offhandStack.isEmpty()) ? HumanoidArm.LEFT : HumanoidArm.RIGHT, scaledWidth, scaledHeight, partialTicks);

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCA",
+    "CUC",
+    "ACS"
+  ],
+  "key": {
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "U": {
+      "item": "stevevsalex:upgrade_base"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:storage_upgrade"
+  }
+}

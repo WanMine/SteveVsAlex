@@ -1,16 +1,16 @@
 package com.diamantino.stevevsalex.client.models;
 
+import com.diamantino.stevevsalex.client.renderers.BombRenderer;
 import com.diamantino.stevevsalex.entities.base.BombEntity;
-import com.diamantino.stevevsalex.entities.steve.SteveOmbEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import org.jetbrains.annotations.NotNull;
 
-import static com.diamantino.stevevsalex.client.renderers.BombRenderer.getBombRotation;
-
+@SuppressWarnings("unused")
 public class BombModel<T extends BombEntity> extends EntityModel<BombEntity> {
 
 	private final ModelPart Full;
@@ -45,12 +45,12 @@ public class BombModel<T extends BombEntity> extends EntityModel<BombEntity> {
 	}
 
 	@Override
-	public void setupAnim(BombEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		Full.xRot = getBombRotation(entity, limbSwing);
+	public void setupAnim(@NotNull BombEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		Full.xRot = BombRenderer.getBombRotation(entity, limbSwing);
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		Full.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

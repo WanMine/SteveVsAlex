@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "AIA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:alexium_hull"
+  }
+}

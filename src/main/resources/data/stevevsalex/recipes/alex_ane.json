@@ -1,0 +1,15 @@
+{
+  "type": "stevevsalex:vehicle_workbench",
+
+  "movement_item": {
+    "item": "stevevsalex:alexium_propeller"
+  },
+  "movement_item_amount": 4,
+  "hull": {
+    "item": "stevevsalex:alexium_hull"
+  },
+  "hull_amount": 4,
+  "result": {
+    "item": "stevevsalex:alex_ane"
+  }
+}

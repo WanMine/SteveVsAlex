@@ -54,6 +54,15 @@ public class SVANetworking {
 
         INSTANCE.registerMessage(
                 ++id,
+                CycleItemsPacket.class,
+                CycleItemsPacket::toBytes,
+                CycleItemsPacket::new,
+                CycleItemsPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
+
+        INSTANCE.registerMessage(
+                ++id,
                 UpdateUpgradePacket.class,
                 UpdateUpgradePacket::toBytes,
                 UpdateUpgradePacket::new,

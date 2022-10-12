@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPA",
+    "WUW",
+    "AWS"
+  ],
+  "key": {
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "U": {
+      "item": "stevevsalex:upgrade_base"
+    },
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "P": {
+      "item": "minecraft:oak_planks"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:floating_pad_upgrade"
+  }
+}

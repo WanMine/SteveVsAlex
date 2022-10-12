@@ -1,6 +1,6 @@
 package com.diamantino.stevevsalex.upgrades.engines;
 
-import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
+import com.diamantino.stevevsalex.client.gui.VehicleInventoryScreen;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAItems;
 import com.diamantino.stevevsalex.registries.SVAUpgrades;
@@ -14,8 +14,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -101,7 +101,7 @@ public class ElectricVehicleEngineUpgrade extends VehicleEngineUpgrade {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityEnergy.ENERGY) {
+        if (cap == ForgeCapabilities.ENERGY) {
             return energyStorageLazyOptional.cast();
         }
         return super.getCapability(cap, side);
@@ -113,14 +113,14 @@ public class ElectricVehicleEngineUpgrade extends VehicleEngineUpgrade {
     }
 
     @Override
-    public void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTicks, PlaneInventoryScreen planeInventoryScreen) {
-        if (planeInventoryScreen.isHovering(152, 7, 16, 72, mouseX, mouseY)) {
-            planeInventoryScreen.renderTooltip(poseStack, Component.translatable(MODID + ".gui.energy", energyStorage.getEnergyStored()), mouseX, mouseY);
+    public void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTicks, VehicleInventoryScreen vehicleInventoryScreen) {
+        if (vehicleInventoryScreen.isHovering(152, 7, 16, 72, mouseX, mouseY)) {
+            vehicleInventoryScreen.renderTooltip(poseStack, Component.translatable(MODID + ".gui.energy", energyStorage.getEnergyStored()), mouseX, mouseY);
         }
     }
 
     @Override
-    public void renderScreenBg(PoseStack poseStack, int x, int y, float partialTicks, PlaneInventoryScreen screen) {
+    public void renderScreenBg(PoseStack poseStack, int x, int y, float partialTicks, VehicleInventoryScreen screen) {
         screen.blit(poseStack, screen.getGuiLeft() + 152, screen.getGuiTop() + 7, 176, 0, 16, 72);
 
         int energy = energyStorage.getEnergyStored();

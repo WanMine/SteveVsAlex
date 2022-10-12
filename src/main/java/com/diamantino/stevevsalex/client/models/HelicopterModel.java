@@ -1,17 +1,16 @@
 package com.diamantino.stevevsalex.client.models;
 
+import com.diamantino.stevevsalex.client.renderers.VehicleRenderer;
 import com.diamantino.stevevsalex.entities.base.HelicopterEntity;
-import com.diamantino.stevevsalex.entities.steve.SteveCopterEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import org.jetbrains.annotations.NotNull;
 
-import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getMinigunRotation;
-import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getPropellerRotation;
-
+@SuppressWarnings("unused")
 public class HelicopterModel<T extends HelicopterEntity> extends EntityModel<HelicopterEntity> {
 
 	private final ModelPart Full;
@@ -296,17 +295,17 @@ public class HelicopterModel<T extends HelicopterEntity> extends EntityModel<Hel
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		Full.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
-	public void setupAnim(HelicopterEntity p_102618_, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
-		Propeller.yRot = getPropellerRotation(p_102618_, p_102619_);
-		BackPropeller.xRot = getPropellerRotation(p_102618_, p_102619_);
+	public void setupAnim(@NotNull HelicopterEntity p_102618_, float p_102619_, float p_102620_, float p_102621_, float p_102622_, float p_102623_) {
+		Propeller.yRot = VehicleRenderer.getPropellerRotation(p_102618_, p_102619_);
+		BackPropeller.xRot = VehicleRenderer.getPropellerRotation(p_102618_, p_102619_);
 		if (p_102618_.getIsShooting()) {
-			Minigun1.zRot = getMinigunRotation(p_102618_, p_102619_);
-			Minigun2.zRot = getMinigunRotation(p_102618_, p_102619_);
+			Minigun1.zRot = VehicleRenderer.getMinigunRotation(p_102618_, p_102619_);
+			Minigun2.zRot = VehicleRenderer.getMinigunRotation(p_102618_, p_102619_);
 		}
 	}
 }

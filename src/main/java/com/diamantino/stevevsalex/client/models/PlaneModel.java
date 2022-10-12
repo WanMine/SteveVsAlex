@@ -1,16 +1,16 @@
 package com.diamantino.stevevsalex.client.models;
 
+import com.diamantino.stevevsalex.client.renderers.VehicleRenderer;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
-import com.diamantino.stevevsalex.entities.steve.SteveAneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import org.jetbrains.annotations.NotNull;
 
-import static com.diamantino.stevevsalex.client.renderers.VehichleRenderer.getPropellerRotation;
-
+@SuppressWarnings("unused")
 public class PlaneModel<T extends PlaneEntity> extends EntityModel<PlaneEntity> {
 
 	private final ModelPart Full;
@@ -1041,15 +1041,15 @@ public class PlaneModel<T extends PlaneEntity> extends EntityModel<PlaneEntity> 
 	}
 
 	@Override
-	public void setupAnim(PlaneEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		Propeller1.zRot = getPropellerRotation(entity, limbSwing);
-		Propeller2.zRot = getPropellerRotation(entity, limbSwing);
-		Propeller3.zRot = -getPropellerRotation(entity, limbSwing);
-		Propeller4.zRot = -getPropellerRotation(entity, limbSwing);
+	public void setupAnim(@NotNull PlaneEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		Propeller1.zRot = VehicleRenderer.getPropellerRotation(entity, limbSwing);
+		Propeller2.zRot = VehicleRenderer.getPropellerRotation(entity, limbSwing);
+		Propeller3.zRot = -VehicleRenderer.getPropellerRotation(entity, limbSwing);
+		Propeller4.zRot = -VehicleRenderer.getPropellerRotation(entity, limbSwing);
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		Full.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

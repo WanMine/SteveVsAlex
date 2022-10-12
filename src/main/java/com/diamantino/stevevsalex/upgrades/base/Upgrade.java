@@ -1,6 +1,6 @@
 package com.diamantino.stevevsalex.upgrades.base;
 
-import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
+import com.diamantino.stevevsalex.client.gui.VehicleInventoryScreen;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.server.level.ServerPlayer;
@@ -98,7 +98,7 @@ public abstract class Upgrade extends CapabilityProvider<Upgrade> implements INB
 
     public void addContainerData(Function<Slot, Slot> addSlot, Function<DataSlot, DataSlot> addDataSlot) {}
 
-    public void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTicks, PlaneInventoryScreen planeInventoryScreen) {}
+    public void renderScreen(PoseStack poseStack, int mouseX, int mouseY, float partialTicks, VehicleInventoryScreen vehicleInventoryScreen) {}
 
-    public void renderScreenBg(PoseStack poseStack, int x, int y, float partialTicks, PlaneInventoryScreen screen) {}
+    public void renderScreenBg(PoseStack poseStack, int x, int y, float partialTicks, VehicleInventoryScreen screen) {}
 }

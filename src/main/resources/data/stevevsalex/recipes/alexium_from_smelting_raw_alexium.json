@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.7,
+  "group": "alexium",
+  "ingredient": {
+    "item": "stevevsalex:raw_alexium"
+  },
+  "result": "stevevsalex:alexium_ingot"
+}

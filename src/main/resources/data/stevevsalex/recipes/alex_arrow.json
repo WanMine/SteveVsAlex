@@ -1,0 +1,15 @@
+{
+  "type": "stevevsalex:ammo_workbench",
+
+  "explosive_item": {
+    "item": "minecraft:iron_ingot"
+  },
+  "explosive_item_amount": 4,
+  "hull": {
+    "item": "stevevsalex:alexium_hull"
+  },
+  "hull_amount": 1,
+  "result": {
+    "item": "stevevsalex:alex_arrow"
+  }
+}

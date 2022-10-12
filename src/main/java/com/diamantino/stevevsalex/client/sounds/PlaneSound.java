@@ -2,6 +2,7 @@ package com.diamantino.stevevsalex.client.sounds;
 
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVASoundEvents;
+import com.diamantino.stevevsalex.upgrades.RocketBoosterUpgrade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -41,12 +42,7 @@ public class PlaneSound extends AbstractTickableSoundInstance {
 
     @Override
     public float getPitch() {
-        return ((float) plane.getThrottle()) * 0.7f + 0.6f;
-    }
-
-    @Override
-    public float getVolume() {
-        return super.getVolume();
+        return (((float) plane.getThrottle()) / RocketBoosterUpgrade.MAX_THROTTLE) * 0.7f + 0.6f;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.diamantino.stevevsalex.upgrades.engines;
 
 import com.diamantino.stevevsalex.client.gui.slots.FuelSlot;
-import com.diamantino.stevevsalex.client.gui.PlaneInventoryScreen;
+import com.diamantino.stevevsalex.client.gui.VehicleInventoryScreen;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAItems;
 import com.diamantino.stevevsalex.registries.SVAUpgrades;
@@ -18,8 +18,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -102,7 +102,7 @@ public class FurnaceVehicleEngineUpgrade extends VehicleEngineUpgrade {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return itemHandlerLazyOptional.cast();
         }
         return super.getCapability(cap, side);
@@ -153,7 +153,7 @@ public class FurnaceVehicleEngineUpgrade extends VehicleEngineUpgrade {
     }
 
     @Override
-    public void renderScreenBg(PoseStack poseStack, int x, int y, float partialTicks, PlaneInventoryScreen screen) {
+    public void renderScreenBg(PoseStack poseStack, int x, int y, float partialTicks, VehicleInventoryScreen screen) {
         screen.blit(poseStack, screen.getGuiLeft() + 151, screen.getGuiTop() + 44, 208, 0, 18, 35);
 
         if (burnTime > 0) {

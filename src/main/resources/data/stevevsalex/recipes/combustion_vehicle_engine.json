@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SIA",
+    "FEF",
+    "ATS"
+  ],
+  "key": {
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "E": {
+      "item": "stevevsalex:engine_base"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "T": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:combustion_vehicle_engine"
+  }
+}

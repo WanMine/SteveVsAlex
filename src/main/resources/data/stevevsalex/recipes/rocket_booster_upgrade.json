@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SGA",
+    "TUT",
+    "AFS"
+  ],
+  "key": {
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "U": {
+      "item": "stevevsalex:upgrade_base"
+    },
+    "T": {
+      "item": "stevevsalex:thruster"
+    },
+    "F": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "G": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:rocket_booster_upgrade"
+  }
+}

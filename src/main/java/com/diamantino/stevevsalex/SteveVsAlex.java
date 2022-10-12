@@ -29,6 +29,12 @@ public class SteveVsAlex {
         SVADataSerializers.init();
         SVANetworking.init();
         SVAUpgrades.init();
+        SVABlockEntityTypes.init();
+        SVABlocks.init();
+        SVARecipeTypes.init();
+        SVARecipeSerializers.init();
+        SVAConfiguredFeatures.init();
+        SVAPlacedFeatures.init();
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);

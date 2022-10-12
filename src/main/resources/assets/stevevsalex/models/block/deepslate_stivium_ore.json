@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "stevevsalex:block/deepslate_stivium_ore"
+  }
+}

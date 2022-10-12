@@ -1,7 +1,7 @@
 package com.diamantino.stevevsalex.client.gui;
 
 import com.diamantino.stevevsalex.client.gui.buttons.UpgradeButtonsList;
-import com.diamantino.stevevsalex.container.RemoveUpgradesContainer;
+import com.diamantino.stevevsalex.containers.RemoveUpgradesContainer;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SLA",
+    "LUL",
+    "ALS"
+  ],
+  "key": {
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "U": {
+      "item": "stevevsalex:upgrade_base"
+    },
+    "L": {
+      "item": "stevevsalex:solar_cell"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:solar_generator_upgrade"
+  }
+}

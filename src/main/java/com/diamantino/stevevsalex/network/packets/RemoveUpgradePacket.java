@@ -1,6 +1,6 @@
 package com.diamantino.stevevsalex.network.packets;
 
-import com.diamantino.stevevsalex.container.RemoveUpgradesContainer;
+import com.diamantino.stevevsalex.containers.RemoveUpgradesContainer;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerPlayer;

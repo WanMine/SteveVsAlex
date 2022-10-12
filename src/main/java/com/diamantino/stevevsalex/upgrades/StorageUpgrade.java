@@ -1,6 +1,6 @@
 package com.diamantino.stevevsalex.upgrades;
 
-import com.diamantino.stevevsalex.container.StorageContainer;
+import com.diamantino.stevevsalex.containers.StorageContainer;
 import com.diamantino.stevevsalex.entities.base.PlaneEntity;
 import com.diamantino.stevevsalex.registries.SVAUpgrades;
 import com.diamantino.stevevsalex.upgrades.base.Upgrade;
@@ -14,10 +14,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,18 +61,18 @@ public class StorageUpgrade extends Upgrade implements MenuProvider {
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Component.translatable(MODID + ":chest");
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int id, Inventory playerInventoryIn, Player playerEntity) {
+    public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventoryIn, @NotNull Player playerEntity) {
         return new StorageContainer(id, playerInventoryIn, itemStackHandler);
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+    public <T> @NotNull LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             return itemHandlerLazyOptional.cast();
         }
         return super.getCapability(cap, side);

@@ -4,6 +4,7 @@ import net.minecraft.util.Mth;
 import com.mojang.math.Quaternion;
 import net.minecraft.world.phys.Vec3;
 
+@SuppressWarnings("unused")
 public class MathUtils {
 
     public static double getHorizontalDistanceSqr(Vec3 vec3) {

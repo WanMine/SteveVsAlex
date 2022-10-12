@@ -1,14 +1,15 @@
 package com.diamantino.stevevsalex.client.models;
 
 import com.diamantino.stevevsalex.entities.base.ProjectileEntity;
-import com.diamantino.stevevsalex.entities.steve.SteveArrowEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public class ArrowModel<T extends ProjectileEntity> extends EntityModel<ProjectileEntity> {
 
     private final ModelPart Full;
@@ -43,12 +44,12 @@ public class ArrowModel<T extends ProjectileEntity> extends EntityModel<Projecti
     }
 
     @Override
-    public void setupAnim(ProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(@NotNull ProjectileEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.scale(0.05f, 0.05f, 0.05f);
         Full.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }

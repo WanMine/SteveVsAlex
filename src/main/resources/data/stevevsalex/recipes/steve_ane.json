@@ -1,0 +1,15 @@
+{
+  "type": "stevevsalex:vehicle_workbench",
+
+  "movement_item": {
+    "item": "stevevsalex:stivium_propeller"
+  },
+  "movement_item_amount": 4,
+  "hull": {
+    "item": "stevevsalex:stivium_hull"
+  },
+  "hull_amount": 4,
+  "result": {
+    "item": "stevevsalex:steve_ane"
+  }
+}

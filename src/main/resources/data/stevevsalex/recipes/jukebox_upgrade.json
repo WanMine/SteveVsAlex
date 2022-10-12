@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SJA",
+    "DUE",
+    "APS"
+  ],
+  "key": {
+    "A": {
+      "item": "stevevsalex:alexium_ingot"
+    },
+    "S": {
+      "item": "stevevsalex:stivium_ingot"
+    },
+    "U": {
+      "item": "stevevsalex:upgrade_base"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "J": {
+      "item": "minecraft:jukebox"
+    },
+    "P": {
+      "item": "minecraft:oak_planks"
+    }
+  },
+  "result": {
+    "item": "stevevsalex:jukebox_upgrade"
+  }
+}

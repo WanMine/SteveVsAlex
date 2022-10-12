@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "stevevsalex:block/vehicle_charger_top",
+    "bottom": "stevevsalex:block/vehicle_charger_bottom",
+    "side": "stevevsalex:block/vehicle_charger_side"
+  }
+}

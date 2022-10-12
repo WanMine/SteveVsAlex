@@ -41,14 +41,14 @@ public class EntityLayers {
         EntityModelSet entityModelSet = Minecraft.getInstance().getEntityModels();
 
         //Steve
-        event.registerEntityRenderer(SVAEntityTypes.STEVE_COPTER.get(), context -> new VehichleRenderer<>(context, new HelicopterModel<>(entityModelSet.bakeLayer(HELICOPTER_LAYER)), 0.6f));
-        event.registerEntityRenderer(SVAEntityTypes.STEVE_ANE.get(), context -> new VehichleRenderer<>(context, new PlaneModel<>(entityModelSet.bakeLayer(PLANE_LAYER)), 0.6f));
+        event.registerEntityRenderer(SVAEntityTypes.STEVE_COPTER.get(), context -> new VehicleRenderer<>(context, new HelicopterModel<>(entityModelSet.bakeLayer(HELICOPTER_LAYER)), 0.6f));
+        event.registerEntityRenderer(SVAEntityTypes.STEVE_ANE.get(), context -> new VehicleRenderer<>(context, new PlaneModel<>(entityModelSet.bakeLayer(PLANE_LAYER)), 0.6f));
         event.registerEntityRenderer(SVAEntityTypes.STEVE_OMB.get(), context -> new BombRenderer<>(context, new BombModel<>(entityModelSet.bakeLayer(BOMB_LAYER)), 0.6f));
         event.registerEntityRenderer(SVAEntityTypes.STEVE_ARROW.get(), context -> new ProjectileRenderer<>(context, new ArrowModel<>(entityModelSet.bakeLayer(ARROW_LAYER)), 0f));
 
         //Alex
-        event.registerEntityRenderer(SVAEntityTypes.ALEX_COPTER.get(), context -> new VehichleRenderer<>(context, new HelicopterModel<>(entityModelSet.bakeLayer(HELICOPTER_LAYER)), 0.6f));
-        event.registerEntityRenderer(SVAEntityTypes.ALEX_ANE.get(), context -> new VehichleRenderer<>(context, new PlaneModel<>(entityModelSet.bakeLayer(PLANE_LAYER)), 0.6f));
+        event.registerEntityRenderer(SVAEntityTypes.ALEX_COPTER.get(), context -> new VehicleRenderer<>(context, new HelicopterModel<>(entityModelSet.bakeLayer(HELICOPTER_LAYER)), 0.6f));
+        event.registerEntityRenderer(SVAEntityTypes.ALEX_ANE.get(), context -> new VehicleRenderer<>(context, new PlaneModel<>(entityModelSet.bakeLayer(PLANE_LAYER)), 0.6f));
         event.registerEntityRenderer(SVAEntityTypes.ALEX_OMB.get(), context -> new BombRenderer<>(context, new BombModel<>(entityModelSet.bakeLayer(BOMB_LAYER)), 0.6f));
         event.registerEntityRenderer(SVAEntityTypes.ALEX_ARROW.get(), context -> new ProjectileRenderer<>(context, new ArrowModel<>(entityModelSet.bakeLayer(ARROW_LAYER)), 0f));
     }
