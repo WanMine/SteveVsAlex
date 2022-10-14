@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[43,)"
 license = "All Rights Reserved"
-issueTrackerURL="https://github.com/Diamantino-Op/SteveVsAlex/issues"
+issueTrackerURL="https://github.com/WanMine/SteveVsAlex/issues"
 
 [[mods]]
 modId = "stevevsalex"
@@ -10,7 +10,7 @@ displayName = "SteveVsAlex"
 #updateJSONURL="http://myurl.me/" #optional
 displayURL="CurseForge: https://www.curseforge.com/minecraft/mc-mods/stevevsalex ModRinth: https://modrinth.com/mod/stevevsalex Discord: https://discord.gg/GxFR95EuCx"
 logoFile="logo.png"
-credits="Some models by MaRK"
+credits="Some models by MaRK, Russian translation by Alexandr1995"
 authors = "Diamantino"
 description = '''
 
